@@ -1,7 +1,11 @@
 #pragma once
 
+#include <stdbool.h>
 #include "raylib.h"
 
-void initWindow(int width, int heigth);
-void draw();
-void deInitWindow();
+#include "maps.h"
+
+void initDisplay(int width, int heigth);
+void draw(maps* m);
+bool isWindowShouldClose();
+void deInitDisplay();

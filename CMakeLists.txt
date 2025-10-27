@@ -1,5 +1,8 @@
-cmake_minimum_required(VERSION 3.16)
-project(game-of-life LANGUAGES C)
+cmake_minimum_required(VERSION 3.16...4.0)
+project(conways-game-of-life 
+        VERSION 0.1 
+        DESCRIPTION "The famous 0 player game implemented in c for a uni prog assigement" 
+        LANGUAGES C)
 
 include(FetchContent)
 
@@ -9,6 +12,16 @@ FetchContent_Declare(
     GIT_TAG c1ab645 # v5.5
 )
 
-project(cgol LANGUAGES C)
+FetchContent_MakeAvailable(raylib)
+
+add_library(core STATIC header/file.h header/sim.h header/window.h src/file.c src/sim.c src/window.c)
+target_include_directories(core PUBLIC header)
+target_link_libraries(core PUBLIC raylib)
+
+# for debug 
+target_compile_options(core PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wconversion)
+target_compile_options(core PRIVATE $<$<CONFIG:Debug>:-O0 -g -fsanitize=address,undefined>)
+target_link_options(core PRIVATE $<$<CONFIG:Debug>:-fsanitize=address,undefined>)
 
 add_executable(gol app.c)
+target_link_libraries(gol PUBLIC core)

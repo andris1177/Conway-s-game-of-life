@@ -1,23 +1,17 @@
 #pragma once
 
+#include <stdlib.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
 
 #include "window.h"
-#include "fie.h"
-
-typedef struct
-{
-    bool *preMap;
-    bool *curMap;
-    int width;
-    int heighth;
-    int simCount;
-    int simSpeed;
-} maps;
+#include "file.h"
+#include "maps.h"
+#include "simSpec.h"
 
 
-void initSim(int sizeX, int sizeY);
-void makeMap();
-void freeMap(maps map);
-bool getMapByIndex(int index, bool* map);
-void setMapByIndex(bool value, int index, bool* map);
+void initSim(int wWidth, int wHeigth, const char* iFile, const char* oFile, maps* m);
+void makeMap(maps* m);
+void applyRule(maps* m, simSpec* spec);
+void deInitSim(maps* m);
