@@ -8,7 +8,7 @@ int main()
     maps map;
     simSpec spec;
 
-    bool temp[] = {
+    bool temp[100] = {
     0,0,0,0,0,0,0,0,0,0,
     0,1,1,0,0,0,0,0,0,0,
     0,1,0,1,0,0,0,1,1,0,
@@ -21,15 +21,15 @@ int main()
     0,0,0,0,0,0,0,0,0,0
     };
 
-    memcpy(map.preMap, temp, sizeof(temp));
-    memcpy(map.curMap, temp, sizeof(temp));
-
     map.width = 10;
     map.width = 10;
 
     initSim(windowWidth, windowHeigth, "../example.map", "../result.map", &map);
 
-    while (isWindowShouldClose)
+    memcpy(map.preMap, temp, 100 * sizeof(bool));
+    memcpy(map.curMap, temp, 100 * sizeof(bool));
+
+    while (!isWindowShouldClose)
     {
         applyRule(&map, &spec);
         draw(&map);
