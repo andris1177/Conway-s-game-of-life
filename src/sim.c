@@ -5,10 +5,10 @@ void initSim(int sizeX, int sizeY)
 
 }
 
-maps makeMap(int size)
+void makeMap(maps map)
 {
-    bool *preMap = malloc(sizeof(bool) * size);
-    bool *curMap = malloc(sizeof(bool) * size);
+    bool map.preMap = malloc(sizeof(bool) * (map.width * map.heighth));
+    bool map.curMap = malloc(sizeof(bool) * (map.width * map.heighth));
 
     return {preMap, curMap};
 }

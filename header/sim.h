@@ -17,7 +17,7 @@ typedef struct
 
 
 void initSim(int sizeX, int sizeY);
-maps makeMap(int size);
+void makeMap();
 void freeMap(maps map);
 bool getMapByIndex(int index, bool* map);
 void setMapByIndex(bool value, int index, bool* map);

@@ -8,3 +8,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/raysan5/raylib.git
     GIT_TAG c1ab645 # v5.5
 )
+
+project(cgol LANGUAGES C)
+
+add_executable(gol app.c)
