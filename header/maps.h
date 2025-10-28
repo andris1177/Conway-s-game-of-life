@@ -6,4 +6,5 @@ typedef struct
     bool *curMap;
     int width;
     int heighth;
+    int size;
 } maps;
