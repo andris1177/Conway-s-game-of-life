@@ -1,4 +1,3 @@
-[BEGIN]
 [HEAD]
 # side x length, side x length, geneartion count, how many generation are displazed in one second 
 10 10 100 1
@@ -13,4 +12,3 @@
 ..........
 ##########
 ..........
-[END]

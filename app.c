@@ -35,7 +35,7 @@ int main()
     map.width = 10;
     map.heighth = 10;
 
-    initSim(windowWidth, windowHeigth, "../example.map", "../result.map", &map);
+    initSim(windowWidth, windowHeigth, &map, &spec);
 
     memcpy(map.preMap, temp, 100 * sizeof(bool));
     memcpy(map.curMap, temp, 100 * sizeof(bool));

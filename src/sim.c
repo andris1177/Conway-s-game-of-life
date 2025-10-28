@@ -1,10 +1,11 @@
 #include "../header/sim.h"
 
-void initSim(int wWidth, int wHeigth, const char* iFile, const char* oFile, maps* m)
+void initSim(int wWidth, int wHeigth, maps* m, simSpec spec)
 {
     m->size = m->width * m->heighth;
     makeMap(m);
     initDisplay(wWidth, wHeigth);
+    readFile(m, spec);
 }
 
 void makeMap(maps* m)

@@ -11,7 +11,7 @@
 #include "simSpec.h"
 
 
-void initSim(int wWidth, int wHeigth, const char* iFile, const char* oFile, maps* m);
+void initSim(int wWidth, int wHeigth, maps* m, simSpec spec);
 void makeMap(maps* m);
 void applyRule(maps* m, simSpec* spec);
 void deInitSim(maps* m);
