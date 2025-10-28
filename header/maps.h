@@ -4,6 +4,6 @@ typedef struct
 {
     bool *preMap;
     bool *curMap;
-    long width;
-    long heighth;
+    int width;
+    int heighth;
 } maps;
