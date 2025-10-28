@@ -16,7 +16,7 @@ void draw(maps* m, int iter)
     int firstX = 10;
     int firstY = 10;
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < m->size; i++)
     {   
         if (i % 10 != 0)
         {
