@@ -16,10 +16,7 @@ void applyRule(maps* m, simSpec* spec)
 {
     for (int i = 0; i < 100; i++)
     {
-        if (i % 2 == 0)
-        {
-            m->curMap[i] = 1
-        }
+        
     }
 
     memcpy(m->curMap, m->preMap, (sizeof(bool) * (m->width * m->heighth)));
