@@ -6,4 +6,4 @@
 #include "maps.h"
 #include "simSpec.h"
 
-void readFile(maps map, simSpec spec);
+void readFile(maps* map, simSpec* spec);

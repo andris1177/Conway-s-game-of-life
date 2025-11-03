@@ -16,24 +16,17 @@ void draw(maps* m, int iter)
     int firstX = 10;
     int firstY = 10;
 
-    for (int i = 0; i < m->size; i++)
-    {   
-        if (i % 10 != 0)
+    for (int i = 0; i < m->height; i++)
+    {
+        firstY += 40;
+        for (int j = 0; j < m->width; j++)
         {
             firstX += 40;
-        }
-            
-        if (i % 10 == 0)
-        {
-            firstX = 10;
-            firstY += 40;
-        }
-
-        if (m->curMap[i] == 1)
-        {
-            DrawRectangle(firstX,firstY, 30, 30, WHITE);
-        }
-        
+            if (m->curMap[i] == 1)
+            {
+                DrawRectangle(firstX,firstY, 30, 30, WHITE);
+            }
+        }   
     }
 
     EndDrawing();
