@@ -9,21 +9,33 @@ void initDisplay(int width, int heigth)
 void draw(maps* m, int iter, int width, int heigth)
 {
     int livingCount = 0;
+    int  commonWindowSize;
+    int gap = 2;
+    int stats = 100;
+
+    if (width == (heigth - stats))
+    {
+        commonWindowSize = width;
+    }
+
+    else if (width > heigth)
+    {
+        commonWindowSize = (heigth - stats);
+    }
+
+    else if (width < (heigth - stats))
+    {
+        commonWindowSize = width;
+    }
+
+    int firstX = ((width - commonWindowSize) / 2);
+    int firstY = ((heigth - commonWindowSize) / 2) + (stats / 2);
+
+    int size = (commonWindowSize / m->width) - gap;
 
     BeginDrawing();
 
     ClearBackground(BLACK);
-    DrawText(TextFormat("Current iteration: %d", iter), 40, 45, 25, WHITE);
-    DrawRectangle(0, 95, heigth, 5, WHITE);
-
-    int gap = 10;
-    int stats = 100;
-
-    int firstX = gap;
-    int firstY = gap+stats;
-
-    int sizeX = (width / m->width) - gap;
-    int sizeY = ((heigth-stats) / m->height) - gap;
 
     for (int i = 0; i < m->height; i++)
     {
@@ -31,18 +43,21 @@ void draw(maps* m, int iter, int width, int heigth)
         {
             if (m->curMap[i][j] == 1)
             {
-                DrawRectangle(firstX, firstY, sizeX, sizeY, WHITE);
+                DrawRectangle(firstX, firstY, size, size, WHITE);
                 livingCount++;
             }
 
-            firstY += sizeY+gap;
+            firstX += (size + gap);
         }
 
-        firstY = gap+stats;
-        firstX += sizeX+gap;
+        firstY += (size + gap);
+        firstX = ((width - commonWindowSize) / 2);
     }
 
-    DrawText(TextFormat("Currently living cells: %d", livingCount), 350, 45, 25, WHITE);
+    // simulation stats
+    DrawText(TextFormat("Current iteration: %d", iter), 40, 45, 25, WHITE);
+    DrawRectangle(0, 93, width, 5, WHITE);
+    DrawText(TextFormat("Currently living cells: %d", livingCount), width - 400, 45, 25, WHITE);
 
     EndDrawing();
     livingCount = 0;

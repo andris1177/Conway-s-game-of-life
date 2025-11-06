@@ -1,8 +1,8 @@
 #include "header/sim.h"
 #include <unistd.h>
 
-#define windowWidth 700
-#define windowHeigth 800
+#define windowWidth 1400
+#define windowHeigth 600
 
 int main(int argc, char *argv[])
 {

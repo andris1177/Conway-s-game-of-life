@@ -33,3 +33,6 @@ cmake --build .
 - [ ] Hotkey for play and pause
 - [ ] Add a guii library (optional)
 - [ ] Add pop up menu for on the spot animation/display changes (optional)
+
+### Known bugs to fix
+- []  Non square maps doesn't fill the entire available space, see example4 for reference 
