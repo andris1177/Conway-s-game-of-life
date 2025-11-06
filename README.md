@@ -32,7 +32,7 @@ cmake --build .
 
 
 ``` bash
-./gol ../example.map output.map
+./gol ../example/example1.map output.map
 ```
 
 ### To-Do list 
