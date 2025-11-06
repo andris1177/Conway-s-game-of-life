@@ -35,7 +35,7 @@ cmake --build .
 ./gol ../example.map output.map
 ```
 
-### core 
+### To-Do list 
 - [x] Eanble indefinite runtime
 - [x] Hotkey for play and pause
 - [ ] Add gui map editor
