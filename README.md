@@ -18,7 +18,7 @@ cmake -G "MinGW Makefiles" ..
 cmake --build .
 ```
 
-## To run the app you need to give an input map and optionally an output map, if an output map is provided the last state will be written to it. There is an example map in the repo you can try out or make your own version from it. Right now you have to edit the text file manually with the basic parameters and map layout but I plan to make a gui editor to make it easier to create maps. You can also pause the simulation by pressing space.
+## To run the app you need to give it an input map and optionally an output map, if an output map is provided the last state will be written to it. There is a couple of example maps in the repo you can try out or make your own version from it. Right now you have to edit the text file manually with the basic parameters and map layout but I plan to make a gui editor to make it easier to create maps. You can also pause the simulation by pressing space.
 
 ## About that file
 
@@ -46,4 +46,4 @@ cmake --build .
 - [ ] Add pop up menu for on the spot animation/display changes (optional)
 
 ### Known bugs to fix
-- []  Non square maps doesn't fill the entire available space, see example4 for reference 
+- [ ]  Non square maps doesn't fill the entire available space, see example4 for reference 
