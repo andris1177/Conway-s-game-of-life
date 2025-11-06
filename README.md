@@ -10,8 +10,13 @@ cmake ../
 cmake --build .
 ```
 
-## To run the app you need to give an input map and optionally an output map, if an output map is provided the last state will be written to it. There is an example map in the repo you can try out or make your own version from it. Right now you have to edit the text file manually with the basic parameters and map layout but I plan to make a gui editor to make it easier to create maps. 
+## To run the app you need to give an input map and optionally an output map, if an output map is provided the last state will be written to it. There is an example map in the repo you can try out or make your own version from it. Right now you have to edit the text file manually with the basic parameters and map layout but I plan to make a gui editor to make it easier to create maps. If  the simCount is less than 0 the program will run until you close the program by pressing esc or using yout os to close it.
 
 ``` bash
 ./gol ../example.map output.map
 ```
+
+## To-Do list
+
+- [x] Eanble indefinite runtime
+- [ ] Add gui map editor

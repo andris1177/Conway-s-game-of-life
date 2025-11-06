@@ -2,7 +2,7 @@
 #include <unistd.h>
 
 #define windowWidth 700
-#define windowHeigth 700
+#define windowHeigth 800
 
 int main(int argc, char *argv[])
 {
@@ -22,7 +22,13 @@ int main(int argc, char *argv[])
     initSim(windowWidth, windowHeigth, &map, &spec);
 
     int iter = 1;
-    while (!isWindowShouldClose() && iter <= spec.simLength)
+    bool run = 0;
+
+    if (spec.simLength < 0)
+    {
+        run = 1;
+    }
+    while (!isWindowShouldClose() && iter <= spec.simLength || (run && !isWindowShouldClose()))
     {
         applyRule(&map);
         draw(&map, iter, windowWidth, windowHeigth);
