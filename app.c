@@ -1,53 +1,27 @@
 #include "header/sim.h"
 #include <unistd.h>
 
-#define windowWidth 1024
-#define windowHeigth 768
+#define windowWidth 700
+#define windowHeigth 700
 
-int main()
+int main(int argc, char *argv[])
 {
     maps map;
     simSpec spec;
 
-    bool temp[][] = {
-    // row 0
-    {0,0,0,0,0,0,0,0,0,0},
-    // row 1 (glider)
-    {0,1,0,0,0,0,0,0,0,0},
-    // row 2
-    {0,0,1,0,0,0,0,0,0,0},
-    // row 3
-    {1,1,1,0,0,0,0,0,0,0},
-    // row 4 (isolated cells)
-    {0,0,0,0,1,0,0,0,0,0},
-    // row 5 (block still life)
-    {0,0,0,0,1,1,0,0,0,0},
-    // row 6
-    {0,0,0,0,1,1,0,0,0,0},
-    // row 7 (blinker)
-    {0,0,0,0,0,0,0,1,1,1},
-    // row 8
-    {0,0,0,0,0,0,0,0,0,0},
-    // row 9
-    {0,0,0,0,0,0,0,0,0,0}
-    };
-
-    map.width = 10;
-    map.heighth = 10;
+    spec.iFile = argv[1];
+    spec.oFile = argv[2];
 
     initSim(windowWidth, windowHeigth, &map, &spec);
 
-    memcpy(map.preMap, temp, 100 * sizeof(bool));
-    memcpy(map.curMap, temp, 100 * sizeof(bool));
-
     int iter = 1;
-    while (!isWindowShouldClose())
+    while (!isWindowShouldClose() && iter <= spec.simLength)
     {
-        draw(&map, iter);
-        applyRule(&map, &spec);
-        sleep(1);
+        applyRule(&map);
+        draw(&map, iter, windowWidth, windowHeigth);
+        sleep(spec.simSpeed);
         iter++;
     }
     
-    deInitSim(&map);
+    deInitSim(&map, &spec);
 }
