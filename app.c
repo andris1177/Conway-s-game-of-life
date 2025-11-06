@@ -9,8 +9,15 @@ int main(int argc, char *argv[])
     maps map;
     simSpec spec;
 
+    bool shouldWrite = 0;
+
     spec.iFile = argv[1];
-    spec.oFile = argv[2];
+
+    if (argv[2] != 0)
+    {
+        shouldWrite = 1;
+        spec.oFile = argv[2];
+    }
 
     initSim(windowWidth, windowHeigth, &map, &spec);
 
@@ -23,5 +30,5 @@ int main(int argc, char *argv[])
         iter++;
     }
     
-    deInitSim(&map, &spec);
+    deInitSim(&map, &spec, shouldWrite);
 }

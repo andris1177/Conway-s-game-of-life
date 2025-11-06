@@ -74,9 +74,12 @@ void applyRule(maps* m)
     m->curMap = tmp;
 }
 
-void deInitSim(maps* m, simSpec* spec)
+void deInitSim(maps* m, simSpec* spec, bool shouldWrite)
 {
-    writeFile(m, spec);
+    if (shouldWrite)
+    {
+        writeFile(m, spec);
+    }
     free(m->preMap);
     free(m->curMap);
     deInitDisplay();
