@@ -5,8 +5,9 @@
 #include "raylib.h"
 
 #include "maps.h"
+#include "simSpec.h"
 
 void initDisplay(int width, int heigth);
-void draw(maps* m, int iter);
+void draw(maps* m, int iter, int width, int heigth);
 bool isWindowShouldClose();
 void deInitDisplay();

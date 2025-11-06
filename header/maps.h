@@ -2,8 +2,8 @@
 
 typedef struct
 {
-    bool *preMap;
-    bool *curMap;
+    bool **preMap;
+    bool **curMap;
     int width;
     int height;
 } maps;

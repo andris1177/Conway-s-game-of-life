@@ -2,7 +2,7 @@
 
 typedef struct
 {
-    int simSpeed;
+    double simSpeed;
     int simLength;
     const char* iFile;
     const char* oFile;

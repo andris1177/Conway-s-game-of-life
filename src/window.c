@@ -6,27 +6,35 @@ void initDisplay(int width, int heigth)
     SetTargetFPS(60);
 }
 
-void draw(maps* m, int iter)
+void draw(maps* m, int iter, int width, int heigth)
 {
     BeginDrawing();
 
     ClearBackground(BLACK);
     DrawText(TextFormat("Integer value: %d", iter), 500, 500, 10, WHITE);
 
-    int firstX = 10;
-    int firstY = 10;
+    int gap = 10;
+
+    int firstX = gap;
+    int firstY = gap;
+
+    int sizeX = (width / m->width) - gap;
+    int sizeY = (heigth / m->height) - gap;
 
     for (int i = 0; i < m->height; i++)
     {
-        firstY += 40;
         for (int j = 0; j < m->width; j++)
         {
-            firstX += 40;
-            if (m->curMap[i] == 1)
+            if (m->curMap[i][j] == 1)
             {
-                DrawRectangle(firstX,firstY, 30, 30, WHITE);
+                DrawRectangle(firstX, firstY, sizeX, sizeY, WHITE);
             }
-        }   
+
+            firstY += sizeY+gap;
+        }
+
+        firstY = gap;
+        firstX += sizeX+gap;
     }
 
     EndDrawing();
