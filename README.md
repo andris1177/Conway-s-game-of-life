@@ -37,11 +37,11 @@ cmake --build .
 
 ### core 
 - [x] Eanble indefinite runtime
+- [x] Hotkey for play and pause
 - [ ] Add gui map editor
 - [ ] Improve gui elemt position
 - [ ] Support for recangle starting map
 - [ ] Add support for different aspect ratios
-- [ ] Hotkey for play and pause
 - [ ] Add a guii library (optional)
 - [ ] Add pop up menu for on the spot animation/display changes (optional)
 
