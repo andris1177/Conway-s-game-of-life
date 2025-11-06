@@ -16,7 +16,7 @@ void makeMap(maps* m)
         m->curMap[i] = (bool *)malloc(sizeof(bool) * m->width);
         m->preMap[i] = (bool *)malloc(sizeof(bool) * m->width);
     }
-};
+}
 
 void applyRule(maps* m)
 {

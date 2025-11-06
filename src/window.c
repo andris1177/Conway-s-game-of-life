@@ -6,7 +6,7 @@ void initDisplay(int width, int heigth)
     SetTargetFPS(60);
 }
 
-void draw(maps* m, int iter, int width, int heigth)
+void draw(maps* m, int iter, int width, int heigth, bool pause)
 {
     int livingCount = 0;
     int  commonWindowSize;
@@ -55,9 +55,14 @@ void draw(maps* m, int iter, int width, int heigth)
     }
 
     // simulation stats
-    DrawText(TextFormat("Current iteration: %d", iter), 40, 45, 25, WHITE);
+    DrawText(TextFormat("Current iteration: %d", iter), 40, 40, 25, WHITE);
+    DrawText(TextFormat("Currently living cells: %d", livingCount), width - (MeasureText("Currently living cells:xxx", 25) + 40), 40, 25, WHITE);
     DrawRectangle(0, 93, width, 5, WHITE);
-    DrawText(TextFormat("Currently living cells: %d", livingCount), width - 400, 45, 25, WHITE);
+
+    if (pause)
+    {
+        DrawText(TextFormat("PAUSED", livingCount), (width / 2) - (MeasureText("PAUSED", 25) / 2), 40, 25, WHITE);
+    }
 
     EndDrawing();
     livingCount = 0;

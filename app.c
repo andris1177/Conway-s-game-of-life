@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     maps map;
     simSpec spec;
 
+    bool pause = 0;
     bool shouldWrite = 0;
 
     spec.iFile = argv[1];
@@ -28,12 +29,35 @@ int main(int argc, char *argv[])
     {
         run = 1;
     }
+
     while (!isWindowShouldClose() && iter <= spec.simLength || (run && !isWindowShouldClose()))
     {
-        applyRule(&map);
-        draw(&map, iter, windowWidth, windowHeigth);
-        sleep(spec.simSpeed);
-        iter++;
+        draw(&map, iter, windowWidth, windowHeigth, pause);
+
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            printf("asd");
+            pause = !pause;
+        }
+
+        if (!pause)
+        {
+            applyRule(&map);
+            
+            // allow sleep to take less than a second but need different library and functioon in windows and unix
+
+            if (spec.simSpeed > 0)
+            {
+                #ifdef _WIN32
+                    sleep((DWORD)(spec.simSpeed * 1000.0));
+                #else
+                    usleep((useconds_t)(spec.simSpeed * 1e6));
+                #endif
+            }
+            
+            iter++;
+        }
+
     }
     
     deInitSim(&map, &spec, shouldWrite);

@@ -31,11 +31,13 @@ void readFile(maps* map, simSpec* spec)
             if (row[j] == '.')
             {
                 map->preMap[i][j] = 0;
+                map->curMap[i][j] = 0;
             }
             
             else if (row[j] == 'x')
             {
                 map->preMap[i][j] = 1;
+                map->curMap[i][j] = 1;
             }
         }
     }

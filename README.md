@@ -18,7 +18,19 @@ cmake -G "MinGW Makefiles" ..
 cmake --build .
 ```
 
-## To run the app you need to give an input map and optionally an output map, if an output map is provided the last state will be written to it. There is an example map in the repo you can try out or make your own version from it. Right now you have to edit the text file manually with the basic parameters and map layout but I plan to make a gui editor to make it easier to create maps. If  the simCount is less than 0 the program will run until you close the program by pressing esc or using yout os to close it.
+## To run the app you need to give an input map and optionally an output map, if an output map is provided the last state will be written to it. There is an example map in the repo you can try out or make your own version from it. Right now you have to edit the text file manually with the basic parameters and map layout but I plan to make a gui editor to make it easier to create maps. You can also pause the simulation by pressing space.
+
+## About that file
+
+### It's a simple file where you can set all the available settings. 
+
+#### width and height is self explanatory you have to set your map dimesions here. 
+
+#### simCount is the value that sets how many times the rules should be applied and the result be showen on the window, if you set it below 0 it'll going to run until you close the window by pressing esc or using your os specific way. 
+
+### simShowTime this sets how many seconds should one iteration be on the window, it is a double so you can set it to less than one second, to remove the speedcap set this value below 0 and the speed will only be capped by the rendering fps which is 60
+
+If  the simCount is less than 0 the program will run until you close the program by pressing esc or using yout os to close it. To prevent the simulation iteration show speedcap set simShowTime to a negative value. 
 
 ``` bash
 ./gol ../example.map output.map
