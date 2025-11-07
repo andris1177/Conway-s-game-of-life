@@ -1,8 +1,8 @@
 #include "header/sim.h"
 #include <unistd.h>
 
-#define windowWidth 1400
-#define windowHeigth 600
+#define windowWidth 1024
+#define windowHeigth 768
 
 int main(int argc, char *argv[])
 {
@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
 
         if (IsKeyPressed(KEY_SPACE))
         {
-            printf("asd");
             pause = !pause;
         }
 
