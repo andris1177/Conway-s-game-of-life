@@ -9,32 +9,39 @@ void initDisplay(int width, int heigth)
 void draw(maps* m, int iter, int width, int heigth, bool pause)
 {
     int livingCount = 0;
-    int  commonWindowSize;
-    int gap = 2;
+    
     int stats = 100;
+    int gap = 2;
+    int avlWidth = width;
+    int avlHeight = heigth - stats;
+    int size; 
 
-    if (width == (heigth - stats))
+    // caculate the max size in x direction and y witha given map size and window size
+    int sizeX = (avlWidth - m->width * gap) / m->width;
+    int sizeY = (avlHeight - m->height * gap) / m->height;
+
+    if (sizeX == sizeY)
     {
-        commonWindowSize = width;
+        size = sizeY;
     }
 
-    else if (width > heigth)
+    else if (sizeX > sizeY)
     {
-        commonWindowSize = (heigth - stats);
+        size = sizeY;
     }
 
-    else if (width < (heigth - stats))
+    else if (sizeX < sizeY)
     {
-        commonWindowSize = width;
+        size = sizeX;
     }
 
-    int firstX = ((width - commonWindowSize) / 2);
-    int firstY = ((heigth - commonWindowSize) / 2) + (stats / 2);
+    int displayMapSizeX = (m->width * size) + ((m->width - 2) * gap);
+    int displayMapSizeY = (m->height * size) + ((m->height - 2) * gap);
 
-    int size = (commonWindowSize / m->width) - gap;
+    int x = (avlWidth - displayMapSizeX) / 2;
+    int y = ((avlHeight - displayMapSizeY) / 2) + stats;
 
     BeginDrawing();
-
     ClearBackground(BLACK);
 
     for (int i = 0; i < m->height; i++)
@@ -43,15 +50,15 @@ void draw(maps* m, int iter, int width, int heigth, bool pause)
         {
             if (m->curMap[i][j] == 1)
             {
-                DrawRectangle(firstX, firstY, size, size, WHITE);
+                DrawRectangle(x, y, size, size, WHITE);
                 livingCount++;
             }
 
-            firstX += (size + gap);
+            x += (size + gap);
         }
 
-        firstY += (size + gap);
-        firstX = ((width - commonWindowSize) / 2);
+        y += (size + gap);
+        x = (avlWidth - displayMapSizeX) / 2;
     }
 
     // simulation stats

@@ -38,12 +38,12 @@ cmake --build .
 ### To-Do list 
 - [x] Eanble indefinite runtime
 - [x] Hotkey for play and pause
+- [x] Add support for different aspect ratios
+- [x] Improve gui elemt position
+- [x] Support for non square starting map
 - [ ] Add gui map editor
-- [ ] Improve gui elemt position
-- [ ] Support for recangle starting map
-- [ ] Add support for different aspect ratios
 - [ ] Add a guii library (optional)
 - [ ] Add pop up menu for on the spot animation/display changes (optional)
 
 ### Known bugs to fix
-- [ ]  Non square maps doesn't fill the entire available space, see example4 for reference 
+- [x]  Non square maps doesn't fill the entire available space, see example4 for reference 

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16...4.0)
 project(conways-game-of-life 
-        VERSION 1.2
+        VERSION 1.8
         DESCRIPTION "The famous 0 player game implemented in c for a uni prog assigement" 
         LANGUAGES C)
 
