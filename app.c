@@ -1,8 +1,8 @@
 #include "header/sim.h"
 #include <unistd.h>
 
-#define windowWidth 1024
-#define windowHeigth 768
+#define windowWidth 1920
+#define windowHeigth 1080
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     simSpec spec;
 
     bool pause = 0;
+    bool next= 0;
     bool shouldWrite = 0;
 
     spec.iFile = argv[1];
@@ -39,12 +40,16 @@ int main(int argc, char *argv[])
             pause = !pause;
         }
 
-        if (!pause)
+        if (IsKeyPressed(KEY_RIGHT))
+        {
+            next = 1;
+        }
+
+        if (!pause || (next && pause))
         {
             applyRule(&map);
             
             // allow sleep to take less than a second but need different library and functioon in windows and unix
-
             if (spec.simSpeed > 0)
             {
                 #ifdef _WIN32
@@ -55,6 +60,7 @@ int main(int argc, char *argv[])
             }
             
             iter++;
+            next = 0;
         }
 
     }

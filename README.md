@@ -28,7 +28,7 @@ cmake --build .
 
 #### simCount is the value that sets how many times the rules should be applied and the result be showen on the window, if you set it below 0 it'll going to run until you close the window by pressing esc or using your os specific way. 
 
-#### simShowTime this sets how many seconds should one iteration be on the window, it is a double so you can set it to less than one second, to remove the speedcap set this value below 0 and the speed will only be capped by the rendering fps which is 60
+#### simShowTime this sets how many seconds should one iteration be on the window, it is a double so you can set it to less than one second. 0 or a negative value means no speedcap, in this case only the rendering speed will limit it which is limited to 60fps.
 
 
 ``` bash
