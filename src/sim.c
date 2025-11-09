@@ -1,20 +1,26 @@
 #include "../header/sim.h"
 
-void initSim(int wWidth, int wHeigth, maps* m, simSpec* spec)
+void initSim(maps* m, simSpec* spec)
 {
-    initDisplay(wWidth, wHeigth);
     readFile(m, spec);
+    initDisplay(spec->windowWidth, spec->windowHeight);
 }
 
 void makeMap(maps* m)
 {
-    m->curMap = malloc(sizeof(bool*) * m->height);
-    m->preMap = malloc(sizeof(bool*) * m->height);
+    if (m->width == 0 && m->height == 0)
+    {
+        printf("Map with 0 area is provided\n");
+        exit(-1);
+    }
+
+    m->curMap = malloc(sizeof(bool*) * (size_t)m->height);
+    m->preMap = malloc(sizeof(bool*) * (size_t)m->height);
 
     for (int i = 0; i < m->height; i++)
     {
-        m->curMap[i] = (bool *)malloc(sizeof(bool) * m->width);
-        m->preMap[i] = (bool *)malloc(sizeof(bool) * m->width);
+        m->curMap[i] = (bool *)malloc(sizeof(bool) * (size_t)m->width);
+        m->preMap[i] = (bool *)malloc(sizeof(bool) * (size_t)m->width);
     }
 }
 

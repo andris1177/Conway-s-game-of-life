@@ -46,4 +46,5 @@ cmake --build .
 - [ ] Add pop up menu for on the spot animation/display changes (optional)
 
 ### Known bugs to fix
-- [x]  Non square maps doesn't fill the entire available space, see example4 for reference 
+- [x] Non square maps doesn't fill the entire available space, see example4 for reference
+- [ ] Some points of the map doesn't get read correctly

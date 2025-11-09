@@ -9,7 +9,7 @@
 #include "simSpec.h"
 
 
-void initSim(int wWidth, int wHeigth, maps* m, simSpec* spec);
+void initSim(maps* m, simSpec* spec);
 void makeMap(maps* m);
 void applyRule(maps* m);
 void deInitSim(maps* m, simSpec* spec, bool shouldWrite);

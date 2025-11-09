@@ -1,13 +1,15 @@
 #include "header/sim.h"
 #include <unistd.h>
 
-#define windowWidth 1920
-#define windowHeigth 1080
-
 int main(int argc, char *argv[])
 {
+    (void)argc; // to tell the compiler that argc is unused
     maps map;
     simSpec spec;
+
+    spec.windowWidth = 1280;
+    spec.windowHeight = 720;
+    spec.fps = 60;
 
     bool pause = 0;
     bool next= 0;
@@ -21,7 +23,7 @@ int main(int argc, char *argv[])
         spec.oFile = argv[2];
     }
 
-    initSim(windowWidth, windowHeigth, &map, &spec);
+    initSim(&map, &spec);
 
     int iter = 1;
     bool run = 0;
@@ -31,9 +33,9 @@ int main(int argc, char *argv[])
         run = 1;
     }
 
-    while (!isWindowShouldClose() && iter <= spec.simLength || (run && !isWindowShouldClose()))
+    while ((!isWindowShouldClose() && iter <= spec.simLength) || (run && !isWindowShouldClose()))
     {
-        draw(&map, iter, windowWidth, windowHeigth, pause);
+        draw(&map, iter, spec.windowWidth, spec.windowHeight, pause);
 
         if (IsKeyPressed(KEY_SPACE))
         {

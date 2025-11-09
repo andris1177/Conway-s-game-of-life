@@ -22,7 +22,7 @@ void readFile(maps* map, simSpec* spec)
 
     makeMap(map);
 
-    char row[map->width + 2];
+    char row[map->width];
     for (int i = 0; i < map->height; i++)
     {
         fgets(row, sizeof(row), file);
@@ -38,6 +38,13 @@ void readFile(maps* map, simSpec* spec)
             {
                 map->preMap[i][j] = 1;
                 map->curMap[i][j] = 1;
+            }
+
+            else
+            {
+                map->preMap[i][j] = 0;
+                map->curMap[i][j] = 0;
+                printf("asd\n");
             }
         }
     }
