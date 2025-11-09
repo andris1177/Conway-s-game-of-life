@@ -22,7 +22,7 @@ void readFile(maps* map, simSpec* spec)
 
     makeMap(map);
 
-    char row[map->width];
+    char row[map->width + 4];
     for (int i = 0; i < map->height; i++)
     {
         fgets(row, sizeof(row), file);
