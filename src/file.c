@@ -26,8 +26,6 @@ void readFile(maps* map, simSpec* spec)
     fgets(buffer, sizeof(buffer), file);
     sscanf(buffer, "%*s %lf", &spec->simSpeed);
 
-    printf("%d\n%d\n%d\n%d\n%d\n%d\n%lf\n", spec->windowWidth, spec->windowHeight, spec->fps, map->width, map->height, spec->simLength, spec->simSpeed);
-
     makeMap(map);
 
     char row[map->width + 12];
@@ -52,7 +50,6 @@ void readFile(maps* map, simSpec* spec)
             {
                 map->preMap[i][j] = 0;
                 map->curMap[i][j] = 0;
-                printf("asd\n");
             }
         }
     }
