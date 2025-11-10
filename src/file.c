@@ -10,19 +10,27 @@ void readFile(maps* map, simSpec* spec)
         exit(1);
     }
 
-    if(
-    !(fscanf(file, "width %d\n", &map->width) == 1 &&
-    fscanf(file, "height %d\n", &map->height) == 1 &&
-    fscanf(file, "simCount %d\n", &spec->simLength) == 1 && 
-    fscanf(file, "simShowTime %lf\n", &spec->simSpeed) == 1))
-    {
-        printf("Failed to read the file header variables\n");
-        exit(1);
-    }
+    char buffer[20];
+    fgets(buffer, sizeof(buffer), file);
+    sscanf(buffer, "%*s %d", &spec->windowWidth);
+    fgets(buffer, sizeof(buffer), file);
+    sscanf(buffer, "%*s %d", &spec->windowHeight);
+    fgets(buffer, sizeof(buffer), file);
+    sscanf(buffer, "%*s %d", &spec->fps);
+    fgets(buffer, sizeof(buffer), file);
+    sscanf(buffer, "%*s %d", &map->width);
+    fgets(buffer, sizeof(buffer), file);
+    sscanf(buffer, "%*s %d", &map->height);
+    fgets(buffer, sizeof(buffer), file);
+    sscanf(buffer, "%*s %d", &spec->simLength);
+    fgets(buffer, sizeof(buffer), file);
+    sscanf(buffer, "%*s %lf", &spec->simSpeed);
+
+    printf("%d\n%d\n%d\n%d\n%d\n%d\n%lf\n", spec->windowWidth, spec->windowHeight, spec->fps, map->width, map->height, spec->simLength, spec->simSpeed);
 
     makeMap(map);
 
-    char row[map->width + 4];
+    char row[map->width + 12];
     for (int i = 0; i < map->height; i++)
     {
         fgets(row, sizeof(row), file);

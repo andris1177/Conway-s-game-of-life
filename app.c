@@ -7,10 +7,6 @@ int main(int argc, char *argv[])
     maps map;
     simSpec spec;
 
-    spec.windowWidth = 1280;
-    spec.windowHeight = 720;
-    spec.fps = 60;
-
     bool pause = 0;
     bool next= 0;
     bool shouldWrite = 0;

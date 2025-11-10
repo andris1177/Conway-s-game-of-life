@@ -1,3 +1,6 @@
+windowWidth 1280
+windowHeight 720
+fps 60
 width 10
 height 10
 simCount -1
