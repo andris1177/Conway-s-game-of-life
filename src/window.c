@@ -48,7 +48,7 @@ void draw(maps* m, int iter, int width, int heigth, bool pause)
     {
         for (int j = 0; j < m->width; j++)
         {
-            if (m->curMap[i][j] == 1)
+            if (m->preMap[i][j] == 1)
             {
                 DrawRectangle(x, y, size, size, WHITE);
                 livingCount++;
