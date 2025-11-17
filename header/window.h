@@ -4,12 +4,6 @@
 #include <stdio.h>
 #include "raylib.h"
 
-#ifdef _WIN32
-    #include <window.h>
-#else
-    #include <unistd.h>
-#endif
-
 #include "maps.h"
 #include "simSpec.h"
 
