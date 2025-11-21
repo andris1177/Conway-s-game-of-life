@@ -1,83 +1,81 @@
 #include "../header/window.h"
 
-void initDisplay(int width, int heigth)
+void initDisplay(const windowSpec* wSpec)
 {
-    InitWindow(width, heigth, "Conway's Game of Life");
-    SetTargetFPS(60);
+    InitWindow(wSpec->windowWidth, wSpec->windowHeight, "Conway's Game of Life");
+    SetTargetFPS(wSpec->fps);
 }
 
-void draw(maps* m, int iter, int width, int heigth, bool pause)
+void getCellSize(windowSpec* wSpec, const maps* map)
 {
-    int livingCount = 0;
-    
-    int stats = 100;
-    int gap = 2;
-    int avlWidth = width;
-    int avlHeight = heigth - stats;
-    int size; 
+    wSpec->stats = 100;
+    wSpec->gap = 2;
+    wSpec->avlWidth = wSpec->windowWidth;
+    wSpec->avlHeight = wSpec->windowHeight - wSpec->stats; 
 
     // caculate the max size in x direction and y witha given map size and window size
-    int sizeX = (avlWidth - m->width * gap) / m->width;
-    int sizeY = (avlHeight - m->height * gap) / m->height;
+    int sizeX = (wSpec->avlWidth - map->width * wSpec->gap) / map->width;
+    int sizeY = (wSpec->avlHeight - map->height * wSpec->gap) / map->height;
 
     if (sizeX == sizeY)
     {
-        size = sizeY;
+        wSpec->size = sizeY;
     }
 
     else if (sizeX > sizeY)
     {
-        size = sizeY;
+        wSpec->size = sizeY;
     }
 
     else if (sizeX < sizeY)
     {
-        size = sizeX;
+        wSpec->size = sizeX;
     }
 
-    int displayMapSizeX = (m->width * size) + ((m->width - 2) * gap);
-    int displayMapSizeY = (m->height * size) + ((m->height - 2) * gap);
+    wSpec->displayMapSizeX = (map->width * wSpec->size) + ((map->width - 2) * wSpec->gap);
+    wSpec->displayMapSizeY = (map->height * wSpec->size) + ((map->height - 2) * wSpec->gap);
+}
 
-    int x = (avlWidth - displayMapSizeX) / 2;
-    int y = ((avlHeight - displayMapSizeY) / 2) + stats;
+void draw(const maps* map, windowSpec* wSpec, const bool pause, const int iter)
+{
+    int livingCount = 0;
+    
+
+    int x = (wSpec->avlWidth - wSpec->displayMapSizeX) / 2;
+    int y = ((wSpec->avlHeight - wSpec->displayMapSizeY) / 2) + wSpec->stats;
 
     BeginDrawing();
     ClearBackground(BLACK);
 
-    for (int i = 0; i < m->height; i++)
+    for (int i = 0; i < map->height; i++)
     {
-        for (int j = 0; j < m->width; j++)
+        for (int j = 0; j < map->width; j++)
         {
-            if (m->preMap[i][j] == 1)
+            if (map->preMap[i][j])
             {
-                DrawRectangle(x, y, size, size, WHITE);
+                DrawRectangle(x, y, wSpec->size, wSpec->size, WHITE);
                 livingCount++;
             }
 
-            x += (size + gap);
+            x += (wSpec->size + wSpec->gap);
         }
 
-        y += (size + gap);
-        x = (avlWidth - displayMapSizeX) / 2;
+        y += (wSpec->size + wSpec->gap);
+        x = (wSpec->avlWidth - wSpec->displayMapSizeX) / 2;
     }
 
     // simulation stats
     DrawText(TextFormat("Current iteration: %d", iter), 40, 40, 25, WHITE);
-    DrawText(TextFormat("Currently living cells: %d", livingCount), width - (MeasureText("Currently living cells:xxx", 25) + 40), 40, 25, WHITE);
-    DrawRectangle(0, 93, width, 5, WHITE);
+    DrawText(TextFormat("Currently living cells: %d", livingCount), wSpec->windowWidth - (MeasureText("Currently living cells:xxx", 25) + 40), 40, 25, WHITE);
+    DrawRectangle(0, 93, wSpec->windowWidth, 5, WHITE);
 
     if (pause)
     {
-        DrawText(TextFormat("PAUSED", livingCount), (width / 2) - (MeasureText("PAUSED", 25) / 2), 40, 25, WHITE);
+        DrawText("PAUSED", (wSpec->windowWidth / 2) - (MeasureText("PAUSED", 25) / 2), 40, 25, WHITE);
     }
 
     EndDrawing();
     livingCount = 0;
-}
-
-bool isWindowShouldClose()
-{
-    return WindowShouldClose();
 }
 
 void deInitDisplay()

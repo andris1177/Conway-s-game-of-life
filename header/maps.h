@@ -2,7 +2,8 @@
 
 #include <stdbool.h>
 
-typedef struct
+/// @brief varibales for the map
+typedef struct maps
 {
     bool **preMap;
     bool **curMap;

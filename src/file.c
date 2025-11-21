@@ -1,30 +1,30 @@
 #include "../header/file.h"
 
-void readFile(maps* map, simSpec* spec)
+void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
 {
-    FILE* file = fopen(spec->iFile, "r");
+    FILE* file = fopen(sSpec->iFile, "r");
 
     if (file == NULL)
     {
         printf("Failed to open the file\n");
-        exit(1);
+        exit(-1);
     }
 
     char buffer[20];
     fgets(buffer, sizeof(buffer), file);
-    sscanf(buffer, "%*s %d", &spec->windowWidth);
+    sscanf(buffer, "%*s %d", &wSpec->windowWidth);
     fgets(buffer, sizeof(buffer), file);
-    sscanf(buffer, "%*s %d", &spec->windowHeight);
+    sscanf(buffer, "%*s %d", &wSpec->windowHeight);
     fgets(buffer, sizeof(buffer), file);
-    sscanf(buffer, "%*s %d", &spec->fps);
+    sscanf(buffer, "%*s %d", &wSpec->fps);
     fgets(buffer, sizeof(buffer), file);
     sscanf(buffer, "%*s %d", &map->width);
     fgets(buffer, sizeof(buffer), file);
     sscanf(buffer, "%*s %d", &map->height);
     fgets(buffer, sizeof(buffer), file);
-    sscanf(buffer, "%*s %d", &spec->simLength);
+    sscanf(buffer, "%*s %d", &sSpec->simLength);
     fgets(buffer, sizeof(buffer), file);
-    sscanf(buffer, "%*s %lf", &spec->simSpeed);
+    sscanf(buffer, "%*s %lf", &sSpec->simSpeed);
 
     makeMap(map);
 
@@ -36,20 +36,20 @@ void readFile(maps* map, simSpec* spec)
         {
             if (row[j] == '.')
             {
-                map->preMap[i][j] = 0;
-                map->curMap[i][j] = 0;
+                map->preMap[i][j] = false;
+                map->curMap[i][j] = false;
             }
             
             else if (row[j] == 'x')
             {
-                map->preMap[i][j] = 1;
-                map->curMap[i][j] = 1;
+                map->preMap[i][j] = true;
+                map->curMap[i][j] = true;
             }
 
             else
             {
-                map->preMap[i][j] = 0;
-                map->curMap[i][j] = 0;
+                map->preMap[i][j] = false;
+                map->curMap[i][j] = false;
             }
         }
     }
@@ -57,16 +57,19 @@ void readFile(maps* map, simSpec* spec)
     fclose(file);
 }
 
-void writeFile(maps* map, simSpec* spec)
+void writeFile(const maps* map, const simSpec* spec, const windowSpec* wSpec)
 {
     FILE* file = fopen(spec->oFile, "w");
 
     if (file == NULL)
     {
         printf("Failed to open the file\n");
-        exit(1);
+        exit(-1);
     }
 
+    fprintf(file, "windowWidth %d\n", wSpec->windowWidth);
+    fprintf(file, "windowHeight %d\n", wSpec->windowHeight);
+    fprintf(file, "fps %d\n", wSpec->fps);
     fprintf(file, "width %d\n", map->width);
     fprintf(file, "height %d\n", map->height);
     fprintf(file, "simCount %d\n", spec->simLength);

@@ -8,5 +8,7 @@
 #include "sim.h"
 #include "debugmalloc.h"
 
-void readFile(maps* map, simSpec* spec);
-void writeFile(maps* map, simSpec* spec);
+/// @brief reads the input file into the given structs
+void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec);
+/// @brief writes the given structs into the output file 
+void writeFile(const maps* map, const simSpec* spec, const windowSpec* wSpec);

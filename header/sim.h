@@ -9,7 +9,12 @@
 #include "simSpec.h"
 #include "debugmalloc.h"
 
-void initSim(maps* m, simSpec* spec);
-void makeMap(maps* m);
-void applyRule(maps* m);
-void deInitSim(maps* m, simSpec* spec, bool shouldWrite);
+/// @brief initializes the simulation
+void initSim(maps* map, simSpec* simSpec, windowSpec* wSpec);
+/// @brief request the 2d blocks from the os on the heap 
+void makeMap(maps* map);
+/// @brief applies the game rules on the map 
+void applyRule(maps* map);
+/// @brief free all unused pointers and closes the window
+void deInitSim(maps* map, const simSpec* sSpec, const windowSpec* wSpec, const bool shouldWrite);
+void mainLoop(maps* map, windowSpec* wSpec, simSpec* sSpec);
