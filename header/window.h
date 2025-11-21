@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "raylib.h"
+#include "debugmalloc.h"
 
 #include "maps.h"
 #include "simSpec.h"

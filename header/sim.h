@@ -7,7 +7,7 @@
 #include "file.h"
 #include "maps.h"
 #include "simSpec.h"
-
+#include "debugmalloc.h"
 
 void initSim(maps* m, simSpec* spec);
 void makeMap(maps* m);

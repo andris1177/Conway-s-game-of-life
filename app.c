@@ -1,4 +1,6 @@
 #include "header/sim.h"
+#include "header/debugmalloc.h"
+
 #include <unistd.h>
 
 int main(int argc, char *argv[])
@@ -62,4 +64,6 @@ int main(int argc, char *argv[])
     }
     
     deInitSim(&map, &spec, shouldWrite);
+    
+    return 0;
 }
