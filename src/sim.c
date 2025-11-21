@@ -86,6 +86,13 @@ void deInitSim(maps* m, simSpec* spec, bool shouldWrite)
     {
         writeFile(m, spec);
     }
+
+    for (int i = 0; i < m ->height; i++)
+    {
+        free(m->preMap[i]);
+        free(m->curMap[i]);
+    }
+
     free(m->preMap);
     free(m->curMap);
     deInitDisplay();
