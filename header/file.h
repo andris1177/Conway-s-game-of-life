@@ -6,7 +6,6 @@
 #include "maps.h"
 #include "simSpec.h"
 #include "sim.h"
-#include "debugmalloc.h"
 
 /// @brief reads the input file into the given structs
 void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec);

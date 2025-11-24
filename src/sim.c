@@ -81,48 +81,51 @@ void applyRule(maps* map)
     map->curMap = tmp;
 }
 
-void mainLoop(maps* map, windowSpec* wSpec, simSpec* sSpec)
+void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec)
 {
-    bool pause = 0;
-    bool next= 0;
+    bool preButoon = false;
+    bool nextButton = false;
+    bool pause = false;
+    bool inf = false;
     int iter = 1;
-    bool inf = 0;
+    double lastUpdate = GetTime();
+
+    map->pre = NULL;
+    map->next = NULL;
 
     if (sSpec->simLength < 0)
     {
-        inf = 1;
+        inf = true;
     }
 
-    double lastUpdate = GetTime();
-
-    while (!WindowShouldClose() && (iter <= sSpec->simLength || inf ))
+    while (!WindowShouldClose() && (iter <= sSpec->simLength || inf))
     {
         draw(map, wSpec, pause, iter);
 
         if (IsKeyPressed(KEY_SPACE))
         {
             pause = !pause;
-        }
+        }      
 
         if (IsKeyPressed(KEY_RIGHT))
         {
-            next = 1;
+            nextButton = true;
+        }
+
+        if (IsKeyPressed(KEY_LEFT))
+        {
+            preButoon = true;
         }
 
         double currentTime = GetTime();
         double timePast = currentTime - lastUpdate;
 
-        if (!pause && timePast >= sSpec->simSpeed || (next && pause))
+        if ((timePast >= sSpec->simSpeed && !pause) || (nextButton && pause))
         {
+            lastUpdate = GetTime();
             applyRule(map);
+            nextButton = false;
             iter++;
-            next = 0;
-            lastUpdate = currentTime;
-        }
-
-        if (pause)
-        {
-            timePast = 0;
         }
     }
 }
@@ -134,13 +137,24 @@ void deInitSim(maps* map, const simSpec* sSpec, const windowSpec* wSpec, const b
         writeFile(map, sSpec, wSpec);
     }
 
-    for (int i = 0; i < map ->height; i++)
+    while (map != NULL)
     {
-        free(map->preMap[i]);
-        free(map->curMap[i]);
+        for (int i = 0; i < map ->height; i++)
+        {
+            free(map->preMap[i]);
+            free(map->curMap[i]);
+        }
+
+        free(map->preMap);
+        free(map->curMap);
+
+
+        maps * tmp = map->next;
+        free(map);
+        map = tmp;
+
+        printf("runnung\n");
     }
 
-    free(map->preMap);
-    free(map->curMap);
     deInitDisplay();
 }

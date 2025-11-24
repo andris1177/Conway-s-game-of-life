@@ -1,11 +1,8 @@
 #include "header/sim.h"
-#include "header/debugmalloc.h"
-
-#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
-    maps map;
+    maps* map = (maps *)malloc(sizeof(maps));
     simSpec sSpec = {0};
     windowSpec wSpec = {0};
     bool shouldWrite = false;
@@ -27,9 +24,9 @@ int main(int argc, char *argv[])
         sSpec.oFile = argv[2];
     }
 
-    initSim(&map, &sSpec, &wSpec);
-    mainLoop(&map, &wSpec, &sSpec);
-    deInitSim(&map, &sSpec, &wSpec, shouldWrite);
+    initSim(map, &sSpec, &wSpec);
+    mainLoop(map, &sSpec, &wSpec);
+    deInitSim(map, &sSpec, &wSpec, shouldWrite);
     
     return 0;
 }
