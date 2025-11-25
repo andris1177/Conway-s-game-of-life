@@ -18,3 +18,5 @@ void applyRule(maps* map);
 /// @brief free all unused pointers and closes the window
 void deInitSim(maps* map, const simSpec* sSpec, const windowSpec* wSpec, const bool shouldWrite);
 void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec);
+void freeMem(maps* map);
+maps* makeList();

@@ -25,6 +25,31 @@ void makeMap(maps* map)
     }
 }
 
+maps* makeList()
+{
+    int memoryLength = 200;
+
+    maps* list = (maps *)malloc(sizeof(maps));
+    maps* first = list;
+
+    for (int i = 1; i < memoryLength; i++)
+    {
+        list->preMap = NULL;
+        list->curMap = NULL;
+        list->height = -1;
+        list->width = -1;
+        list->index = -1;
+        list->next = (maps *)malloc(sizeof(maps));
+        list->next->pre = list;
+        list = list->next;
+    }
+
+    list->next = first;
+    first->pre = list;
+
+    return first;
+}
+
 void applyRule(maps* map)
 {
     int countn = 0;
@@ -87,20 +112,18 @@ void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec)
     bool nextButton = false;
     bool pause = false;
     bool inf = false;
-    int iter = 1;
     double lastUpdate = GetTime();
 
-    map->pre = NULL;
-    map->next = NULL;
+    map->index = 1;
 
     if (sSpec->simLength < 0)
     {
         inf = true;
     }
 
-    while (!WindowShouldClose() && (iter <= sSpec->simLength || inf))
+    while (!WindowShouldClose() && (map->index <= sSpec->simLength || inf))
     {
-        draw(map, wSpec, pause, iter);
+        draw(map, wSpec, pause);
 
         if (IsKeyPressed(KEY_SPACE))
         {
@@ -123,10 +146,62 @@ void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec)
         if ((timePast >= sSpec->simSpeed && !pause) || (nextButton && pause))
         {
             lastUpdate = GetTime();
+
+            map->next->height = map->height;
+            map->next->width = map->width;
+            map->next->index = map->index;
+
+            if (map->next->preMap == NULL || map->next->curMap == NULL)
+            {
+                makeMap(map->next);
+            }
+
+            for (int i = 0; i < map->height; i++)
+            {
+                for (int j = 0; j < map->width; j++)
+                {
+                    map->next->preMap[i][j] = map->preMap[i][j];
+                    map->next->curMap[i][j] = map->curMap[i][j];
+                }
+            }
+
+            map = map->next;
+
             applyRule(map);
             nextButton = false;
-            iter++;
+            map->index++;
         }
+
+        if (map->pre->preMap != NULL && map->pre->curMap != NULL && preButoon && pause)
+        {
+            map = map->pre;
+            preButoon = false;
+        }
+    }
+}
+
+void freeMem(maps* map)
+{
+    while (map != NULL)
+    {
+        if (map->preMap != NULL && map->curMap != NULL)
+        {
+            for (int i = 0; i < map ->height; i++)
+            {
+                free(map->preMap[i]);
+                free(map->curMap[i]);
+            }
+
+            free(map->preMap);
+            free(map->curMap);
+        }
+
+
+        maps * tmp = map->next;
+        free(map);
+        map = tmp;
+
+        printf("runnung\n");
     }
 }
 
@@ -137,24 +212,8 @@ void deInitSim(maps* map, const simSpec* sSpec, const windowSpec* wSpec, const b
         writeFile(map, sSpec, wSpec);
     }
 
-    while (map != NULL)
-    {
-        for (int i = 0; i < map ->height; i++)
-        {
-            free(map->preMap[i]);
-            free(map->curMap[i]);
-        }
-
-        free(map->preMap);
-        free(map->curMap);
-
-
-        maps * tmp = map->next;
-        free(map);
-        map = tmp;
-
-        printf("runnung\n");
-    }
+    map->pre->next = NULL;
+    freeMem(map);
 
     deInitDisplay();
 }

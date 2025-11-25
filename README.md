@@ -48,3 +48,4 @@ cmake --build .
 ### Known bugs to fix
 - [x] Non square maps doesn't fill the entire available space, see example4 for reference
 - [x] Some points of the map doesn't get read correctly
+- [ ] makelist fails to set any data value for the last node, it causes a segfault at index 199 in mainLoop and another segfault at the freeMem function

@@ -11,4 +11,5 @@ typedef struct maps
     bool **curMap;
     int width;
     int height;
+    int index;
 } maps;

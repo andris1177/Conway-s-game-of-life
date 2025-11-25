@@ -36,7 +36,7 @@ void getCellSize(windowSpec* wSpec, const maps* map)
     wSpec->displayMapSizeY = (map->height * wSpec->size) + ((map->height - 2) * wSpec->gap);
 }
 
-void draw(const maps* map, windowSpec* wSpec, const bool pause, const int iter)
+void draw(const maps* map, windowSpec* wSpec, const bool pause)
 {
     int livingCount = 0;
     
@@ -65,7 +65,7 @@ void draw(const maps* map, windowSpec* wSpec, const bool pause, const int iter)
     }
 
     // simulation stats
-    DrawText(TextFormat("Current iteration: %d", iter), 40, 40, 25, WHITE);
+    DrawText(TextFormat("Current iteration: %d", map->index), 40, 40, 25, WHITE);
     DrawText(TextFormat("Currently living cells: %d", livingCount), wSpec->windowWidth - (MeasureText("Currently living cells:xxx", 25) + 40), 40, 25, WHITE);
     DrawRectangle(0, 93, wSpec->windowWidth, 5, WHITE);
 

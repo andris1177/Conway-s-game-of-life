@@ -2,10 +2,11 @@
 
 int main(int argc, char *argv[])
 {
-    maps* map = (maps *)malloc(sizeof(maps));
+    maps* map = makeList();
     simSpec sSpec = {0};
     windowSpec wSpec = {0};
     bool shouldWrite = false;
+    sSpec.iFile = "../examples/example1.map";
 
     if (argc >= 2 && argv[1] != NULL)
     {
@@ -14,8 +15,8 @@ int main(int argc, char *argv[])
 
     else
     {
-        printf("Input file is missing\n");
-        return -1;
+        //printf("Input file is missing\n");
+        //return -1;
     }
 
     if (argc >= 3 && argv[2] != NULL)
