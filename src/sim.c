@@ -12,7 +12,8 @@ void makeMap(maps* map)
     if (map->width == 0 && map->height == 0)
     {
         printf("Map with 0 area is provided\n");
-        exit(-1);
+        freeMem(map);
+        exit(ERROR_EXIT);
     }
 
     map->curMap = malloc(sizeof(bool*) * (size_t)map->height);
@@ -27,21 +28,30 @@ void makeMap(maps* map)
 
 maps* makeList()
 {
-    int memoryLength = 200;
+    maps* first = NULL;
+    maps* list = NULL;
 
-    maps* list = (maps *)malloc(sizeof(maps));
-    maps* first = list;
-
-    for (int i = 1; i < memoryLength; i++)
+    for (int i = 0; i < MEMORY_LENGTH; i++)
     {
-        list->preMap = NULL;
-        list->curMap = NULL;
-        list->height = -1;
-        list->width = -1;
-        list->index = -1;
-        list->next = (maps *)malloc(sizeof(maps));
-        list->next->pre = list;
-        list = list->next;
+        maps* node = (maps *)malloc(sizeof(maps));
+        node->preMap = NULL;
+        node->curMap = NULL;
+        node->height = -1;
+        node->width = -1;
+        node->index = -1;
+
+        if (first == NULL)
+        {
+            list = node;
+            first = list;
+        }
+        
+        else
+        {
+            list->next = node;
+            list->next->pre = list;
+            list = list->next;
+        }
     }
 
     list->next = first;
@@ -130,18 +140,35 @@ void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec)
             pause = !pause;
         }      
 
-        if (IsKeyPressed(KEY_RIGHT))
+        if (IsKeyPressed(KEY_RIGHT) || IsKeyDown(KEY_UP))
         {
             nextButton = true;
         }
 
-        if (IsKeyPressed(KEY_LEFT))
+        if (IsKeyPressed(KEY_LEFT) || IsKeyDown(KEY_DOWN))
         {
             preButoon = true;
         }
 
         double currentTime = GetTime();
         double timePast = currentTime - lastUpdate;
+
+        if (pause && nextButton)
+        {
+            if (map->next->index > map->index)
+            {
+                // ie there is a new node after the current one, so the user backtracked, 
+                //no neede to generate the values once again so only switching to the next chain is enough
+                map = map->next;
+                nextButton = false;
+            }
+        }
+
+        if (map->pre->preMap != NULL && map->pre->curMap != NULL && preButoon && pause)
+        {
+            map = map->pre;
+            preButoon = false;
+        }
 
         if ((timePast >= sSpec->simSpeed && !pause) || (nextButton && pause))
         {
@@ -171,17 +198,13 @@ void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec)
             nextButton = false;
             map->index++;
         }
-
-        if (map->pre->preMap != NULL && map->pre->curMap != NULL && preButoon && pause)
-        {
-            map = map->pre;
-            preButoon = false;
-        }
     }
 }
 
 void freeMem(maps* map)
 {
+    map->pre->next = NULL;
+
     while (map != NULL)
     {
         if (map->preMap != NULL && map->curMap != NULL)
@@ -196,12 +219,9 @@ void freeMem(maps* map)
             free(map->curMap);
         }
 
-
         maps * tmp = map->next;
         free(map);
         map = tmp;
-
-        printf("runnung\n");
     }
 }
 
@@ -212,7 +232,6 @@ void deInitSim(maps* map, const simSpec* sSpec, const windowSpec* wSpec, const b
         writeFile(map, sSpec, wSpec);
     }
 
-    map->pre->next = NULL;
     freeMem(map);
 
     deInitDisplay();

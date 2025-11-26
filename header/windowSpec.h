@@ -1,6 +1,5 @@
 #pragma once
 
-/// @brief window related variables 
 typedef struct 
 {
     int windowWidth;

@@ -7,16 +7,13 @@
 #include "file.h"
 #include "maps.h"
 #include "simSpec.h"
+#include "settings.h"
 #include "debugmalloc.h"
 
-/// @brief initializes the simulation
-void initSim(maps* map, simSpec* simSpec, windowSpec* wSpec);
-/// @brief request the 2d blocks from the os on the heap 
+void initSim(maps* map, simSpec* simSpec, windowSpec* wSpec); 
 void makeMap(maps* map);
-/// @brief applies the game rules on the map 
+maps* makeList();
 void applyRule(maps* map);
-/// @brief free all unused pointers and closes the window
-void deInitSim(maps* map, const simSpec* sSpec, const windowSpec* wSpec, const bool shouldWrite);
 void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec);
 void freeMem(maps* map);
-maps* makeList();
+void deInitSim(maps* map, const simSpec* sSpec, const windowSpec* wSpec, const bool shouldWrite);

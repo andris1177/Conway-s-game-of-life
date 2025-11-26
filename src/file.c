@@ -6,8 +6,9 @@ void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
 
     if (file == NULL)
     {
-        printf("Failed to open the file\n");
-        exit(-1);
+        printf("Failed to open the input file\n");
+        freeMem(map);
+        exit(ERROR_EXIT);
     }
 
     char buffer[20];
@@ -57,14 +58,15 @@ void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
     fclose(file);
 }
 
-void writeFile(const maps* map, const simSpec* spec, const windowSpec* wSpec)
+void writeFile(maps* map, const simSpec* sSpec, const windowSpec* wSpec)
 {
-    FILE* file = fopen(spec->oFile, "w");
+    FILE* file = fopen(sSpec->oFile, "w");
 
     if (file == NULL)
     {
-        printf("Failed to open the file\n");
-        exit(-1);
+        printf("Failed to open the output file\n");
+        deInitSim(map, sSpec, wSpec, false);
+        exit(ERROR_EXIT);
     }
 
     fprintf(file, "windowWidth %d\n", wSpec->windowWidth);
@@ -72,8 +74,8 @@ void writeFile(const maps* map, const simSpec* spec, const windowSpec* wSpec)
     fprintf(file, "fps %d\n", wSpec->fps);
     fprintf(file, "width %d\n", map->width);
     fprintf(file, "height %d\n", map->height);
-    fprintf(file, "simCount %d\n", spec->simLength);
-    fprintf(file, "simShowTime %lf\n", spec->simSpeed);
+    fprintf(file, "simCount %d\n", sSpec->simLength);
+    fprintf(file, "simShowTime %lf\n", sSpec->simSpeed);
 
     for (int i = 0; i < map->height; i++)
     {

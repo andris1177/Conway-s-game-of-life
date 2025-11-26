@@ -1,6 +1,5 @@
 #pragma once
 
-/// @brief basic settings for the smulation
 typedef struct
 {
     double simSpeed;

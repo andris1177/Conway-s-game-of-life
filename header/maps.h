@@ -2,7 +2,6 @@
 
 #include <stdbool.h>
 
-/// @brief varibales for the map
 typedef struct maps
 {
     struct maps* pre;

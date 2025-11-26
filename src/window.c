@@ -32,6 +32,14 @@ void getCellSize(windowSpec* wSpec, const maps* map)
         wSpec->size = sizeX;
     }
 
+    if (wSpec->size < 1)
+    {
+        printf("To small window resolution for the given map\n");
+        freeMem(map);
+        deInitDisplay();
+        exit(ERROR_EXIT);
+    }
+
     wSpec->displayMapSizeX = (map->width * wSpec->size) + ((map->width - 2) * wSpec->gap);
     wSpec->displayMapSizeY = (map->height * wSpec->size) + ((map->height - 2) * wSpec->gap);
 }
