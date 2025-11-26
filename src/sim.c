@@ -11,9 +11,9 @@ void makeMap(maps* map)
 {
     if (map->width == 0 && map->height == 0)
     {
-        printf("Map with 0 area is provided\n");
+        fprintf(stderr, "Map with 0 area is provided\n");
         freeMem(map);
-        exit(ERROR_EXIT);
+        exit(ERROR_INPUT);
     }
 
     map->curMap = malloc(sizeof(bool*) * (size_t)map->height);

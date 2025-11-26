@@ -6,9 +6,9 @@ void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
 
     if (file == NULL)
     {
-        printf("Failed to open the input file\n");
+        fprintf(stderr, "Failed to open the input file\n");
         freeMem(map);
-        exit(ERROR_EXIT);
+        exit(ERROR_FILE);
     }
 
     char buffer[20];
@@ -64,9 +64,9 @@ void writeFile(maps* map, const simSpec* sSpec, const windowSpec* wSpec)
 
     if (file == NULL)
     {
-        printf("Failed to open the output file\n");
+        fprintf(stderr, "Failed to open the output file\n");
         deInitSim(map, sSpec, wSpec, false);
-        exit(ERROR_EXIT);
+        exit(ERROR_FILE);
     }
 
     fprintf(file, "windowWidth %d\n", wSpec->windowWidth);

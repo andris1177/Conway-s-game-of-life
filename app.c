@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
 
     else
     {
-        printf("Input file is missing\n");
+        fprintf(stderr, "Input file is missing\n");
         freeMem(map);
-        return ERROR_EXIT;
+        return ERROR_INPUT;
     }
 
     if (argc >= 3 && argv[2] != NULL)

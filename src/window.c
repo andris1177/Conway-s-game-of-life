@@ -6,7 +6,7 @@ void initDisplay(const windowSpec* wSpec)
     SetTargetFPS(wSpec->fps);
 }
 
-void getCellSize(windowSpec* wSpec, const maps* map)
+void getCellSize(windowSpec* wSpec, maps* map)
 {
     wSpec->stats = 100;
     wSpec->gap = 2;
@@ -34,10 +34,10 @@ void getCellSize(windowSpec* wSpec, const maps* map)
 
     if (wSpec->size < 1)
     {
-        printf("To small window resolution for the given map\n");
+        fprintf(stderr, "To small window resolution for the given map\n");
         freeMem(map);
         deInitDisplay();
-        exit(ERROR_EXIT);
+        exit(ERROR_INPUT);
     }
 
     wSpec->displayMapSizeX = (map->width * wSpec->size) + ((map->width - 2) * wSpec->gap);

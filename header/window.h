@@ -12,6 +12,6 @@
 #include "settings.h"
 
 void initDisplay(const windowSpec* wSpec);
-void getCellSize(windowSpec* wSpec, const maps* map);
+void getCellSize(windowSpec* wSpec, maps* map);
 void draw(const maps* map, windowSpec* wSpec, const bool pause);
 void deInitDisplay();
