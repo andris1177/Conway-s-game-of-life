@@ -42,6 +42,9 @@ void getCellSize(windowSpec* wSpec, maps* map)
 
     wSpec->displayMapSizeX = (map->width * wSpec->size) + ((map->width - 2) * wSpec->gap);
     wSpec->displayMapSizeY = (map->height * wSpec->size) + ((map->height - 2) * wSpec->gap);
+
+    wSpec->startX = (wSpec->avlWidth - wSpec->displayMapSizeX) / 2;
+    wSpec->startY = ((wSpec->avlHeight - wSpec->displayMapSizeY) / 2) + wSpec->stats;
 }
 
 void draw(const maps* map, windowSpec* wSpec, const bool pause)
@@ -49,8 +52,8 @@ void draw(const maps* map, windowSpec* wSpec, const bool pause)
     int livingCount = 0;
     
 
-    int x = (wSpec->avlWidth - wSpec->displayMapSizeX) / 2;
-    int y = ((wSpec->avlHeight - wSpec->displayMapSizeY) / 2) + wSpec->stats;
+    int x = wSpec->startX;
+    int y = wSpec->startY;
 
     BeginDrawing();
     ClearBackground(BLACK);

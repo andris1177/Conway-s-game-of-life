@@ -12,4 +12,6 @@ typedef struct
     int avlHeight;
     int displayMapSizeX;
     int displayMapSizeY;
+    int startX;
+    int startY;
 } windowSpec;
