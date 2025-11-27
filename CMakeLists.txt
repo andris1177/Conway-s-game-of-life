@@ -14,7 +14,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(raylib)
 
-add_library(core STATIC src/file.c src/sim.c src/window.c)
+add_library(core STATIC src/file.c src/sim.c src/window.c src/mem.c)
 target_include_directories(core PUBLIC header)
 target_link_libraries(core PUBLIC raylib)
 

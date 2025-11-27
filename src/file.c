@@ -6,8 +6,8 @@ void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
 
     if (file == NULL)
     {
-        fprintf(stderr, "Failed to open the input file\n");
-        freeMem(map);
+        fprintf(stderr, "Failed to open the input file. exiting...\n");
+        freeAll();
         exit(ERROR_FILE);
     }
 
@@ -58,13 +58,13 @@ void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
     fclose(file);
 }
 
-void writeFile(maps* map, const simSpec* sSpec, const windowSpec* wSpec)
+void writeFile(const maps* map, const simSpec* sSpec, const windowSpec* wSpec)
 {
     FILE* file = fopen(sSpec->oFile, "w");
 
     if (file == NULL)
     {
-        fprintf(stderr, "Failed to open the output file\n");
+        fprintf(stderr, "Failed to open the output file. exiting...\n");
         deInitSim(map, sSpec, wSpec, false);
         exit(ERROR_FILE);
     }

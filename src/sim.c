@@ -3,26 +3,25 @@
 void initSim(maps* map, simSpec* simSpec, windowSpec* wSpec)
 {
     readFile(map, simSpec, wSpec);
-    initDisplay(wSpec);
-    getCellSize(wSpec, map);
+    initDisplay(map, wSpec);
 }
 
 void makeMap(maps* map)
 {
     if (map->width == 0 && map->height == 0)
     {
-        fprintf(stderr, "Map with 0 area is provided\n");
-        freeMem(map);
+        fprintf(stderr, "Map with 0 area is provided. exiting...\n");
+        freeAll();
         exit(ERROR_INPUT);
     }
 
-    map->curMap = malloc(sizeof(bool*) * (size_t)map->height);
-    map->preMap = malloc(sizeof(bool*) * (size_t)map->height);
+    map->curMap = safeMalloc(sizeof(bool*) * (size_t)map->height);
+    map->preMap = safeMalloc(sizeof(bool*) * (size_t)map->height);
 
     for (int i = 0; i < map->height; i++)
     {
-        map->curMap[i] = (bool *)malloc(sizeof(bool) * (size_t)map->width);
-        map->preMap[i] = (bool *)malloc(sizeof(bool) * (size_t)map->width);
+        map->curMap[i] = safeMalloc(sizeof(bool) * (size_t)map->width);
+        map->preMap[i] = safeMalloc(sizeof(bool) * (size_t)map->width);
     }
 }
 
@@ -33,7 +32,7 @@ maps* makeList()
 
     for (int i = 0; i < MEMORY_LENGTH; i++)
     {
-        maps* node = (maps *)malloc(sizeof(maps));
+        maps* node = safeMalloc(sizeof(maps));
         node->preMap = NULL;
         node->curMap = NULL;
         node->height = -1;
@@ -116,7 +115,7 @@ void applyRule(maps* map)
     map->curMap = tmp;
 }
 
-void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec)
+void mainLoop(maps* map, const simSpec* sSpec, windowSpec* wSpec)
 {
     bool preButoon = false;
     bool nextButton = false;
@@ -201,38 +200,17 @@ void mainLoop(maps* map, simSpec* sSpec, windowSpec* wSpec)
     }
 }
 
-void freeMem(maps* map)
-{
-    map->pre->next = NULL;
-
-    while (map != NULL)
-    {
-        if (map->preMap != NULL && map->curMap != NULL)
-        {
-            for (int i = 0; i < map ->height; i++)
-            {
-                free(map->preMap[i]);
-                free(map->curMap[i]);
-            }
-
-            free(map->preMap);
-            free(map->curMap);
-        }
-
-        maps * tmp = map->next;
-        free(map);
-        map = tmp;
-    }
-}
-
-void deInitSim(maps* map, const simSpec* sSpec, const windowSpec* wSpec, const bool shouldWrite)
+void deInitSim(const maps* map, const simSpec* sSpec, const windowSpec* wSpec, const bool shouldWrite)
 {
     if (shouldWrite)
     {
         writeFile(map, sSpec, wSpec);
     }
 
-    freeMem(map);
+    if (wSpec->isRaylibInit)
+    {
+        deInitDisplay();
+    }
 
-    deInitDisplay();
+    freeAll();
 }

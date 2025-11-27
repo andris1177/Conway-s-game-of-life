@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 typedef struct 
 {
     int windowWidth;
@@ -14,4 +16,5 @@ typedef struct
     int displayMapSizeY;
     int startX;
     int startY;
+    bool isRaylibInit;
 } windowSpec;

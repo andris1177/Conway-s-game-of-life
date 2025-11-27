@@ -1,12 +1,14 @@
 #include "../header/window.h"
 
-void initDisplay(const windowSpec* wSpec)
+void initDisplay(maps* map, windowSpec* wSpec)
 {
     InitWindow(wSpec->windowWidth, wSpec->windowHeight, "Conway's Game of Life");
     SetTargetFPS(wSpec->fps);
+    getCellSize(map, wSpec);
+    wSpec->isRaylibInit = true;
 }
 
-void getCellSize(windowSpec* wSpec, maps* map)
+void getCellSize(const maps* map, windowSpec* wSpec)
 {
     wSpec->stats = 100;
     wSpec->gap = 2;
@@ -34,8 +36,8 @@ void getCellSize(windowSpec* wSpec, maps* map)
 
     if (wSpec->size < 1)
     {
-        fprintf(stderr, "To small window resolution for the given map\n");
-        freeMem(map);
+        fprintf(stderr, "To small window resolution for the given map. exiting...\n");
+        freeAll();
         deInitDisplay();
         exit(ERROR_INPUT);
     }

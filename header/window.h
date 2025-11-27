@@ -12,9 +12,9 @@
 #include "settings.h"
 
 /// @brief Creates the raylib window and sets the target fps
-void initDisplay(const windowSpec* wSpec);
+void initDisplay(maps* map, windowSpec* wSpec);
 /// @brief Calculates the max cell size that can fit into the window based on the map aspect ratio and the window resolution 
-void getCellSize(windowSpec* wSpec, maps* map);
+void getCellSize(const maps* map, windowSpec* wSpec);
 /// @brief Craws the map on to the window  
 void draw(const maps* map, windowSpec* wSpec, const bool pause);
 /// @brief Calls raylib CloseWindow function
