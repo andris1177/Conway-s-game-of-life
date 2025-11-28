@@ -7,6 +7,8 @@ static size_t blockPad;
 static size_t count;
 static size_t padding;
 static bool init = false;
+static size_t allocated;
+static size_t blocks;
 
 void memInit()
 {
@@ -22,6 +24,8 @@ void memInit()
     blockPad = 500;
     padding = 100;
     count = 0;
+    allocated = 0;
+    blocks = 0;
     init = true;
 }
 
@@ -55,6 +59,8 @@ void* safeMalloc(size_t size)
 
     memMap[count] = ptr;
     count++;
+    allocated += size;
+    blocks++;
 
     return ptr;
 }
@@ -152,4 +158,26 @@ void freeAll()
     free(memMap);
 
     memMap = NULL;
+}
+
+void memReport()
+{
+    if (memMap == NULL)
+    {
+        printf("**************************************************************\n");
+        printf("* The debug malloc we have at home :3\n");
+        printf("* No GC-managed memory leak detected\n");
+        printf("* Total GC allocated %zu block, %zu byte.\n", blocks, allocated);
+        printf("**************************************************************\n");
+    }
+
+    else
+    {
+        printf("**************************************************************\n");
+        printf("* The debug malloc we have at home :3\n");
+        printf("* Leaky memory detected\n");
+        printf("* The number of unfreed memory block are: %d \n", count);
+        printf("* You really should call freeAll() at the end of your program\n");
+        printf("**************************************************************\n");
+    }
 }

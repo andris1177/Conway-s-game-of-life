@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdbool.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -19,3 +19,5 @@ void shrink();
 void safeFree(void* ptr);
 /// @brief Frees all the memory in the gc list, can't be called twice without first calling memInit() once again.
 void freeAll();
+/// @brief Prints out the amount of allocated and freed memory and prints out any remaining memory address. 
+void memReport();

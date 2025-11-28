@@ -213,4 +213,5 @@ void deInitSim(const maps* map, const simSpec* sSpec, const windowSpec* wSpec, c
     }
 
     freeAll();
+    memReport();
 }
