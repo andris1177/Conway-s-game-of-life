@@ -20,3 +20,6 @@ target_link_libraries(core PUBLIC raylib)
 
 add_executable(gol app.c)
 target_link_libraries(gol PUBLIC core)
+
+add_executable(mapGen mapGen.c)
+target_link_libraries(mapGen PUBLIC core)

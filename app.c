@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    memInit();
+    initMem();
     maps* map = makeList();
     simSpec sSpec = {0};
     windowSpec wSpec = {0};
@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     {
         fprintf(stderr, "Input file is missing. exiting...\n");
         freeAll();
+        memReport();
         return ERROR_INPUT;
     }
 

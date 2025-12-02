@@ -12,6 +12,7 @@ void makeMap(maps* map)
     {
         fprintf(stderr, "Map with 0 area is provided. exiting...\n");
         freeAll();
+        memReport();
         exit(ERROR_INPUT);
     }
 
@@ -169,6 +170,7 @@ void mainLoop(maps* map, const simSpec* sSpec, windowSpec* wSpec)
             preButoon = false;
         }
 
+        // TODO: also check if the user backtracked and don't regenerate nodes when the simulation is resumed. 
         if ((timePast >= sSpec->simSpeed && !pause) || (nextButton && pause))
         {
             lastUpdate = GetTime();

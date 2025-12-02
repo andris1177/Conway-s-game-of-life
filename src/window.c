@@ -41,6 +41,7 @@ void getCellSize(const maps* map, windowSpec* wSpec, bool init)
             fprintf(stderr, "To small window resolution for the given map. exiting...\n");
             freeAll();
             deInitDisplay();
+            memReport();
             exit(ERROR_INPUT);
         }
 

@@ -1,17 +1,18 @@
+#GOLMAPFILE
 windowWidth 1280
 windowHeight 720
-fps 60
+fps 180
 width 10
 height 10
-simCount -1
-simShowTime 1
+simCount 10
+simShowTime 10
 xxxxxxxxxx
 xxxxxxxxxx
 xxxxxxxxxx
 xxxxxxxxxx
-xxxx..xxxx
-xxxx..xxxx
 xxxxxxxxxx
 xxxxxxxxxx
 xxxxxxxxxx
-xxxxxxxxxx 
+xxxxxxxxxx
+xxxxxxxxxx
+xxxxxxxxxx

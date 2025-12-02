@@ -10,8 +10,9 @@ static bool init = false;
 static size_t allocated;
 static size_t blocks;
 
-void memInit()
+void initMem()
 {
+    debugmalloc_max_block_size(50 * 1024 * 1024);
     int initialSize = 500;
     memMap = malloc(initialSize * sizeof(*memMap));
     if (memMap == NULL)
@@ -33,13 +34,13 @@ void* safeMalloc(size_t size)
 {
     if (!init)
     {
-        fprintf(stderr, "Can't call safeMalloc() without first calling memInit(). exiting...\n");
+        fprintf(stderr, "Can't call safeMalloc() without first calling initMem(). exiting...\n");
         exit(ERROR_MEMORY);
     }
 
     else if (memMap == NULL)
     {
-        fprintf(stderr, "Can't call safeMalloc() after freeAll(), if you want to use it call memInit() again. exiting...\n");
+        fprintf(stderr, "Can't call safeMalloc() after freeAll(), if you want to use it call initMem() again. exiting...\n");
         exit(ERROR_MEMORY);
     }
 
@@ -49,6 +50,7 @@ void* safeMalloc(size_t size)
     {
         fprintf(stderr, "Failed to allocate memory. exiting...\n");
         freeAll();
+        memReport();
         exit(ERROR_MEMORY);
     }
 
@@ -73,6 +75,7 @@ void grow()
     {
         fprintf(stderr, "SAFEMALLOC: Failed to increase the size of the block, sorry this is just my silly little gc acting up. exiting...\n");
         freeAll();
+        memReport();
         exit(ERROR_MEMORY);
     }
 
@@ -88,6 +91,7 @@ void shrink()
     {
         fprintf(stderr, "SAFEFREE: Failed to decrease the size of the block, sorry this is just my silly little gc acting up. exiting...\n");
         freeAll();
+        memReport();
         exit(ERROR_MEMORY);
     }
 
@@ -104,13 +108,13 @@ void safeFree(void* ptr)
 
     else if (!init)
     {
-        fprintf(stderr, "Can't call safeFree() without first calling memInit(). exiting...\n");
+        fprintf(stderr, "Can't call safeFree() without first calling initMem(). exiting...\n");
         exit(ERROR_MEMORY);
     }
 
     else if (memMap == NULL)
     {
-        fprintf(stderr, "Can't call safeFree() after freeAll(), if you want to use it call memInit() again. exiting...\n");
+        fprintf(stderr, "Can't call safeFree() after freeAll(), if you want to use it call initMem() again. exiting...\n");
         exit(ERROR_MEMORY);
     }
 
@@ -133,6 +137,7 @@ void safeFree(void* ptr)
 
     fprintf(stderr, "The program tried to free a pointer not managed by gc, might be double free, or did you used plain free. exiting...\n");
     freeAll();
+    memReport();
     exit(ERROR_MEMORY);
 }
 
@@ -140,13 +145,13 @@ void freeAll()
 {
     if (!init)
     {
-        fprintf(stderr, "Can't call freeAll() without first calling memInit(). exiting...\n");
+        fprintf(stderr, "Can't call freeAll() without first calling initMem(). exiting...\n");
         exit(ERROR_MEMORY);
     }
 
     else if (memMap == NULL)
     {
-        fprintf(stderr, "Can't call freeAll() more than once without a new memInit() before the call. exiting...\n");
+        fprintf(stderr, "Can't call freeAll() more than once without a new initMem() before the call. exiting...\n");
         exit(ERROR_MEMORY);
     }
 
