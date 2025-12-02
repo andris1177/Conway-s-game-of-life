@@ -93,12 +93,12 @@ void applyRule(maps* map)
 
             if (countn < 2 || countn > 3)
             {
-                map->curMap[i][j] = 0;
+                map->curMap[i][j] = false;
             }
 
             else if (countn == 3)
             {
-                map->curMap[i][j] = 1;
+                map->curMap[i][j] = true;
             }
 
             else
@@ -196,6 +196,53 @@ void mainLoop(maps* map, const simSpec* sSpec, windowSpec* wSpec)
             applyRule(map);
             nextButton = false;
             map->index++;
+        }
+
+        double mouse = GetMouseWheelMove();
+
+        if (mouse > 0)
+        {
+            zoom(map, wSpec, ZOOM_STEP);
+        }
+
+        else if (mouse < 0)
+        {
+            zoom(map, wSpec, -1 * ZOOM_STEP);
+        }
+
+        if (IsKeyPressed(KEY_J))
+        {
+            zoom(map, wSpec, ZOOM_STEP);
+        }
+
+        if (IsKeyPressed(KEY_K))
+        {
+            zoom(map, wSpec, -1 * ZOOM_STEP);
+        }
+
+        if (IsKeyPressed(KEY_F))
+        {
+            refit(map, wSpec);
+        }
+
+        if (IsKeyDown(KEY_W))
+        {
+            pivot(map, wSpec, MOVE_STEP, 2);
+        }
+
+        if (IsKeyDown(KEY_S))
+        {
+            pivot(map, wSpec, -1 * MOVE_STEP, 2);
+        }
+
+        if (IsKeyDown(KEY_A))
+        {
+            pivot(map, wSpec, MOVE_STEP, 1);
+        }
+
+        if (IsKeyDown(KEY_D))
+        {
+            pivot(map, wSpec, -1 * MOVE_STEP, 1);
         }
     }
 }

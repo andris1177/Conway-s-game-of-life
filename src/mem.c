@@ -16,7 +16,7 @@ void memInit()
     memMap = malloc(initialSize * sizeof(*memMap));
     if (memMap == NULL)
     {
-        fprintf(stderr, "SAFEFREE: Failed to allocate memory, sorry this is just my silly little gc acting up. exiting...\n");
+        fprintf(stderr, "SAFEMEM: Failed to allocate memory, sorry this is just my silly little gc acting up. exiting...\n");
         exit(ERROR_MEMORY);
     }
 
@@ -176,7 +176,7 @@ void memReport()
         printf("**************************************************************\n");
         printf("* The debug malloc we have at home :3\n");
         printf("* Leaky memory detected\n");
-        printf("* The number of unfreed memory block are: %d \n", count);
+        printf("* The number of unfreed memory block are: %zu \n", count);
         printf("* You really should call freeAll() at the end of your program\n");
         printf("**************************************************************\n");
     }

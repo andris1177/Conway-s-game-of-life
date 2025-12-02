@@ -7,7 +7,7 @@
 #include "settings.h"
 #include "debugmalloc.h"
 
-/// @brief Initializes the safe memory variables
+/// @brief Initializes the safe memory variables.
 void memInit();
 /// @brief Works just like malloc() from the outside, but it also stores the allocated memory in a sort of gc list and if the os can't give the requested size of memory, it frees all the allocated memory in th gc list and closes the program.  
 void* safeMalloc(size_t size);

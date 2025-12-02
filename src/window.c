@@ -4,56 +4,92 @@ void initDisplay(maps* map, windowSpec* wSpec)
 {
     InitWindow(wSpec->windowWidth, wSpec->windowHeight, "Conway's Game of Life");
     SetTargetFPS(wSpec->fps);
-    getCellSize(map, wSpec);
+    getCellSize(map, wSpec, true);
+    wSpec->moveX = 0;
+    wSpec->moveY = 0;
     wSpec->isRaylibInit = true;
 }
 
-void getCellSize(const maps* map, windowSpec* wSpec)
+void getCellSize(const maps* map, windowSpec* wSpec, bool init)
 {
-    wSpec->stats = 100;
-    wSpec->gap = 2;
-    wSpec->avlWidth = wSpec->windowWidth;
-    wSpec->avlHeight = wSpec->windowHeight - wSpec->stats; 
-
-    // caculate the max size in x direction and y witha given map size and window size
-    int sizeX = (wSpec->avlWidth - map->width * wSpec->gap) / map->width;
-    int sizeY = (wSpec->avlHeight - map->height * wSpec->gap) / map->height;
-
-    if (sizeX == sizeY)
+    if (init)
     {
-        wSpec->size = sizeY;
+        wSpec->avlWidth = wSpec->windowWidth;
+        wSpec->avlHeight = wSpec->windowHeight - (2 * STATS_SIZE); 
+
+        // caculate the max size in x and y directions with a given map size and window size
+        int sizeX = (wSpec->avlWidth - map->width * CELL_GAP) / map->width;
+        int sizeY = (wSpec->avlHeight - map->height * CELL_GAP) / map->height;
+
+        if (sizeX == sizeY)
+        {
+            wSpec->size = sizeY;
+        }
+
+        else if (sizeX > sizeY)
+        {
+            wSpec->size = sizeY;
+        }
+
+        else if (sizeX < sizeY)
+        {
+            wSpec->size = sizeX;
+        }
+
+        if (wSpec->size < 1)
+        {
+            fprintf(stderr, "To small window resolution for the given map. exiting...\n");
+            freeAll();
+            deInitDisplay();
+            exit(ERROR_INPUT);
+        }
+
+        wSpec->originalSize = wSpec->size;
     }
 
-    else if (sizeX > sizeY)
+    wSpec->displayMapSizeX = (map->width * wSpec->size) + ((map->width - 2) * CELL_GAP);
+    wSpec->displayMapSizeY = (map->height * wSpec->size) + ((map->height - 2) * CELL_GAP);
+
+    wSpec->startX = ((wSpec->avlWidth - wSpec->displayMapSizeX) / 2) + wSpec->moveX;
+    wSpec->startY = (((wSpec->avlHeight - wSpec->displayMapSizeY) / 2) + STATS_SIZE) + wSpec->moveY;
+}
+
+void zoom(maps* map, windowSpec* wSpec, int amount)
+{
+    if (wSpec->size + amount >= 1)
     {
-        wSpec->size = sizeY;
+        wSpec->size += amount;
+        getCellSize(map, wSpec, false);
+    }
+}
+
+void pivot(maps* map, windowSpec* wSpec, int amount, int direction)
+{
+    if (direction == 1)
+    {
+        wSpec->moveX += amount;
     }
 
-    else if (sizeX < sizeY)
+    if (direction == 2)
     {
-        wSpec->size = sizeX;
+        wSpec->moveY += amount;
     }
 
-    if (wSpec->size < 1)
-    {
-        fprintf(stderr, "To small window resolution for the given map. exiting...\n");
-        freeAll();
-        deInitDisplay();
-        exit(ERROR_INPUT);
-    }
+    getCellSize(map, wSpec, false);
+}
 
-    wSpec->displayMapSizeX = (map->width * wSpec->size) + ((map->width - 2) * wSpec->gap);
-    wSpec->displayMapSizeY = (map->height * wSpec->size) + ((map->height - 2) * wSpec->gap);
-
-    wSpec->startX = (wSpec->avlWidth - wSpec->displayMapSizeX) / 2;
-    wSpec->startY = ((wSpec->avlHeight - wSpec->displayMapSizeY) / 2) + wSpec->stats;
+void refit(maps* map, windowSpec* wSpec)
+{
+    wSpec->size = wSpec->originalSize;
+    wSpec->moveX = 0;
+    wSpec->moveY = 0;
+    getCellSize(map, wSpec, false);
 }
 
 void draw(const maps* map, windowSpec* wSpec, const bool pause)
 {
     int livingCount = 0;
     
-
     int x = wSpec->startX;
     int y = wSpec->startY;
 
@@ -70,17 +106,25 @@ void draw(const maps* map, windowSpec* wSpec, const bool pause)
                 livingCount++;
             }
 
-            x += (wSpec->size + wSpec->gap);
+            x += (wSpec->size + CELL_GAP);
         }
 
-        y += (wSpec->size + wSpec->gap);
-        x = (wSpec->avlWidth - wSpec->displayMapSizeX) / 2;
+        y += (wSpec->size + CELL_GAP);
+        x = ((wSpec->avlWidth - wSpec->displayMapSizeX) / 2) + wSpec->moveX;
     }
 
-    // simulation stats
+    // simulation stats top
+    DrawRectangle(0, 0, wSpec->windowWidth, 98, PINK);
     DrawText(TextFormat("Current iteration: %d", map->index), 40, 40, 25, WHITE);
     DrawText(TextFormat("Currently living cells: %d", livingCount), wSpec->windowWidth - (MeasureText("Currently living cells:xxx", 25) + 40), 40, 25, WHITE);
     DrawRectangle(0, 93, wSpec->windowWidth, 5, WHITE);
+
+    // simulation stats bottom
+    DrawRectangle(0, wSpec->windowHeight - STATS_SIZE + 2, wSpec->windowWidth, 98, PINK);
+    DrawText(TextFormat("%.2lfx", (double)wSpec->size / (double)wSpec->originalSize), wSpec->windowWidth - (MeasureText("1.00x", 25) + 40), wSpec->windowHeight - 55, 25, WHITE);
+    DrawText(TextFormat("FPS:          %d", GetFPS()), 40, wSpec->windowHeight - 40, 25, WHITE);
+    DrawText(TextFormat("Frametime:   %lf", GetFrameTime()), 40, wSpec->windowHeight - 70, 25, WHITE);
+    DrawRectangle(0, wSpec->windowHeight - 97, wSpec->windowWidth, 5, WHITE);
 
     if (pause)
     {
