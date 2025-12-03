@@ -256,7 +256,7 @@ void deInitSim(const maps* map, const simSpec* sSpec, const windowSpec* wSpec, c
         writeFile(map, sSpec, wSpec);
     }
 
-    if (wSpec->isRaylibInit)
+    if (IsWindowReady())
     {
         deInitDisplay();
     }

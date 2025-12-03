@@ -18,5 +18,4 @@ typedef struct
     int startY;
     int moveX;
     int moveY;
-    bool isRaylibInit;
 } windowSpec;

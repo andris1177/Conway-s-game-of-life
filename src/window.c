@@ -7,7 +7,6 @@ void initDisplay(maps* map, windowSpec* wSpec)
     getCellSize(map, wSpec, true);
     wSpec->moveX = 0;
     wSpec->moveY = 0;
-    wSpec->isRaylibInit = true;
 }
 
 void getCellSize(const maps* map, windowSpec* wSpec, bool init)
