@@ -18,4 +18,6 @@ typedef struct
     int startY;
     int moveX;
     int moveY;
+    bool pause;
+    int livingCount;
 } windowSpec;

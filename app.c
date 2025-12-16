@@ -6,6 +6,8 @@ int main(int argc, char *argv[])
     maps* map = makeList();
     simSpec sSpec = {0};
     windowSpec wSpec = {0};
+    inputState input = {0};
+    loopSpecs lSpec = {0};
     bool shouldWrite = false;
 
     if (argc >= 2 && argv[1] != NULL)
@@ -28,7 +30,7 @@ int main(int argc, char *argv[])
     }
 
     initSim(map, &sSpec, &wSpec);
-    mainLoop(map, &sSpec, &wSpec);
+    mainLoop(map, &sSpec, &wSpec, &input, &lSpec, initSimLoop, simLoop, shouldContinueSim);
     deInitSim(map, &sSpec, &wSpec, shouldWrite);
     
     return 0;

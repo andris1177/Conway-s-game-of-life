@@ -1,3 +1,4 @@
+#define RAYGUI_IMPLEMENTATION
 #include "../header/window.h"
 
 void initDisplay(maps* map, windowSpec* wSpec)
@@ -86,9 +87,9 @@ void refit(maps* map, windowSpec* wSpec)
     getCellSize(map, wSpec, false);
 }
 
-void draw(const maps* map, windowSpec* wSpec, const bool pause)
+void drawMap(const maps* map, windowSpec* wSpec, uiDrawFn ui)
 {
-    int livingCount = 0;
+    wSpec->livingCount = 0;
     
     int x = wSpec->startX;
     int y = wSpec->startY;
@@ -103,7 +104,7 @@ void draw(const maps* map, windowSpec* wSpec, const bool pause)
             if (map->preMap[i][j])
             {
                 DrawRectangle(x, y, wSpec->size, wSpec->size, WHITE);
-                livingCount++;
+                wSpec->livingCount++;
             }
 
             x += (wSpec->size + CELL_GAP);
@@ -113,10 +114,18 @@ void draw(const maps* map, windowSpec* wSpec, const bool pause)
         x = ((wSpec->avlWidth - wSpec->displayMapSizeX) / 2) + wSpec->moveX;
     }
 
+    ui(map, wSpec);
+
+    EndDrawing();
+    wSpec->livingCount = 0;
+}
+
+void drawSimUi(const maps* map, windowSpec* wSpec)
+{
     // simulation stats top
     DrawRectangle(0, 0, wSpec->windowWidth, 98, PINK);
     DrawText(TextFormat("Current iteration: %d", map->index), 40, 40, 25, WHITE);
-    DrawText(TextFormat("Currently living cells: %d", livingCount), wSpec->windowWidth - (MeasureText("Currently living cells:xxx", 25) + 40), 40, 25, WHITE);
+    DrawText(TextFormat("Currently living cells: %d", wSpec->livingCount), wSpec->windowWidth - (MeasureText("Currently living cells:xxx", 25) + 40), 40, 25, WHITE);
     DrawRectangle(0, 93, wSpec->windowWidth, 5, WHITE);
 
     // simulation stats bottom
@@ -126,13 +135,10 @@ void draw(const maps* map, windowSpec* wSpec, const bool pause)
     DrawText(TextFormat("Frametime:   %lf", GetFrameTime()), 40, wSpec->windowHeight - 70, 25, WHITE);
     DrawRectangle(0, wSpec->windowHeight - 97, wSpec->windowWidth, 5, WHITE);
 
-    if (pause)
+    if (wSpec->pause)
     {
         DrawText("PAUSED", (wSpec->windowWidth / 2) - (MeasureText("PAUSED", 25) / 2), 40, 25, WHITE);
     }
-
-    EndDrawing();
-    livingCount = 0;
 }
 
 void deInitDisplay()

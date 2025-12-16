@@ -116,135 +116,184 @@ void applyRule(maps* map)
     map->curMap = tmp;
 }
 
-void mainLoop(maps* map, const simSpec* sSpec, windowSpec* wSpec)
+void keyInput(inputState* input)
 {
-    bool preButoon = false;
-    bool nextButton = false;
-    bool pause = false;
-    bool inf = false;
-    double lastUpdate = GetTime();
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        input->pause = !input->pause;
+    }      
 
-    map->index = 1;
+    if (IsKeyPressed(KEY_RIGHT) || IsKeyDown(KEY_UP))
+    {
+        input->next = true;
+    }
+
+    if (IsKeyPressed(KEY_LEFT) || IsKeyDown(KEY_DOWN))
+    {
+        input->prev = true;
+    }
+
+    double mouse = GetMouseWheelMove();
+
+    if (mouse > 0 || IsKeyPressed(KEY_J))
+    {
+        input->zoomIn = true;
+    }
+
+    else if (mouse < 0 || IsKeyPressed(KEY_K))
+    {
+        input->zoomOut = true;
+    }
+
+    if (IsKeyPressed(KEY_F))
+    {
+        input->recenter = true;
+    }
+
+    if (IsKeyDown(KEY_W))
+    {
+        input->panUp = true;
+    }
+
+    if (IsKeyDown(KEY_S))
+    {
+        input->panDown = true;
+    }
+
+    if (IsKeyDown(KEY_A))
+    {
+        input->panLeft = true;
+    }
+
+    if (IsKeyDown(KEY_D))
+    {
+        input->panRight = true;
+    }
+}
+
+void initSimLoop(simSpec* sSpec, loopSpecs* lSpec)
+{
+    lSpec->inf = false;
+    lSpec->lastUpdate = GetTime();
 
     if (sSpec->simLength < 0)
     {
-        inf = true;
+        lSpec->inf = true;
+    }
+}
+
+void simLoop(maps* map, simSpec* sSpec, windowSpec* wSpec, loopSpecs* lSpec, inputState* input)
+{
+    double currentTime = GetTime();
+    double timePast = currentTime - lSpec->lastUpdate;
+
+    if (input->pause && input->next)
+    {
+        if (map->next->index > map->index)
+        {
+            // ie there is a new node after the current one, so the user backtracked, 
+            //no neede to generate the values once again so only switching to the next chain is enough
+            map = map->next;
+            input->next = false;
+        }
     }
 
-    while (!WindowShouldClose() && (map->index <= sSpec->simLength || inf))
+    if (map->pre->preMap != NULL && map->pre->curMap != NULL && input->prev && input->pause)
     {
-        draw(map, wSpec, pause);
+        map = map->pre;
+        input->prev = false;
+    }
 
-        if (IsKeyPressed(KEY_SPACE))
-        {
-            pause = !pause;
-        }      
+    // TODO: also check if the user backtracked and don't regenerate nodes when the simulation is resumed. 
+    if ((timePast >= sSpec->simSpeed && !input->pause) || (input->next && input->pause))
+    {
+        lSpec->lastUpdate = GetTime();
 
-        if (IsKeyPressed(KEY_RIGHT) || IsKeyDown(KEY_UP))
+        map->next->height = map->height;
+        map->next->width = map->width;
+        map->next->index = map->index;
+
+        if (map->next->preMap == NULL || map->next->curMap == NULL)
         {
-            nextButton = true;
+            makeMap(map->next);
         }
 
-        if (IsKeyPressed(KEY_LEFT) || IsKeyDown(KEY_DOWN))
+        for (int i = 0; i < map->height; i++)
         {
-            preButoon = true;
-        }
-
-        double currentTime = GetTime();
-        double timePast = currentTime - lastUpdate;
-
-        if (pause && nextButton)
-        {
-            if (map->next->index > map->index)
+            for (int j = 0; j < map->width; j++)
             {
-                // ie there is a new node after the current one, so the user backtracked, 
-                //no neede to generate the values once again so only switching to the next chain is enough
-                map = map->next;
-                nextButton = false;
+                map->next->preMap[i][j] = map->preMap[i][j];
+                map->next->curMap[i][j] = map->curMap[i][j];
             }
         }
 
-        if (map->pre->preMap != NULL && map->pre->curMap != NULL && preButoon && pause)
-        {
-            map = map->pre;
-            preButoon = false;
-        }
+        map = map->next;
 
-        // TODO: also check if the user backtracked and don't regenerate nodes when the simulation is resumed. 
-        if ((timePast >= sSpec->simSpeed && !pause) || (nextButton && pause))
-        {
-            lastUpdate = GetTime();
+        applyRule(map);
+        input->next = false;
+        map->index++;
+    }
 
-            map->next->height = map->height;
-            map->next->width = map->width;
-            map->next->index = map->index;
+}
 
-            if (map->next->preMap == NULL || map->next->curMap == NULL)
-            {
-                makeMap(map->next);
-            }
+bool shouldContinueSim(maps* map, simSpec* sSpec, loopSpecs* lSpec)
+{
+    return (map->index <= sSpec->simLength || lSpec->inf);
+}
 
-            for (int i = 0; i < map->height; i++)
-            {
-                for (int j = 0; j < map->width; j++)
-                {
-                    map->next->preMap[i][j] = map->preMap[i][j];
-                    map->next->curMap[i][j] = map->curMap[i][j];
-                }
-            }
+void mainLoop(maps* map, const simSpec* sSpec, windowSpec* wSpec, inputState* input, loopSpecs* lSpec, initLoop initL, loopType loopT, shouldContinue shouldC)
+{
+    map->index = 1;
+    initL(sSpec, lSpec);
 
-            map = map->next;
+    while (!WindowShouldClose() && shouldC(map, sSpec, lSpec))
+    {
+        drawMap(map, wSpec, drawSimUi);
+        keyInput(input);
 
-            applyRule(map);
-            nextButton = false;
-            map->index++;
-        }
-
-        double mouse = GetMouseWheelMove();
-
-        if (mouse > 0)
+        loopT(map, sSpec, wSpec, lSpec, input);
+        
+        if (input->zoomIn)
         {
             zoom(map, wSpec, ZOOM_STEP);
+            input->zoomIn = false;
         }
 
-        else if (mouse < 0)
+        else if (input->zoomOut)
         {
             zoom(map, wSpec, -1 * ZOOM_STEP);
+            input->zoomOut = false;
         }
 
-        if (IsKeyPressed(KEY_J))
-        {
-            zoom(map, wSpec, ZOOM_STEP);
-        }
 
-        if (IsKeyPressed(KEY_K))
-        {
-            zoom(map, wSpec, -1 * ZOOM_STEP);
-        }
-
-        if (IsKeyPressed(KEY_F))
+        if (input->recenter)
         {
             refit(map, wSpec);
+            input->recenter = false;
         }
 
-        if (IsKeyDown(KEY_W))
+        if (input->panUp)
         {
             pivot(map, wSpec, MOVE_STEP, 2);
+            input->panUp = false;
         }
 
-        if (IsKeyDown(KEY_S))
+        if (input->panDown)
         {
             pivot(map, wSpec, -1 * MOVE_STEP, 2);
+            input->panDown = false;
         }
 
-        if (IsKeyDown(KEY_A))
+        if (input->panLeft)
         {
             pivot(map, wSpec, MOVE_STEP, 1);
+            input->panLeft = false;
         }
 
-        if (IsKeyDown(KEY_D))
+        if (input->panRight)
         {
             pivot(map, wSpec, -1 * MOVE_STEP, 1);
+            input->panRight = false;
         }
     }
 }

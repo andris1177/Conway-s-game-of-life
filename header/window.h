@@ -11,6 +11,8 @@
 #include "sim.h"
 #include "settings.h"
 
+typedef void (*uiDrawFn)(const maps* map, windowSpec* wSpec);
+
 /// @brief Creates the raylib window and sets the target fps.
 void initDisplay(maps* map, windowSpec* wSpec);
 /// @brief Calculates the max cell size that can fit into the window based on the map aspect ratio and the window resolution.
@@ -22,7 +24,8 @@ void zoom(maps* map, windowSpec* wSpec, int amount);
 void pivot(maps* map, windowSpec* wSpec, int amount, int direction);
 /// @brief Resets the map position and size to default.
 void refit(maps* map, windowSpec* wSpec);
+void drawMap(const maps* map, windowSpec* wSpec, uiDrawFn ui);
 /// @brief Draws the map onto the window.
-void draw(const maps* map, windowSpec* wSpec, const bool pause);
+void drawSimUi(const maps* map, windowSpec* wSpec);
 /// @brief Calls raylib CloseWindow function.
 void deInitDisplay();
