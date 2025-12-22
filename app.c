@@ -1,37 +1,11 @@
-#include "header/sim.h"
+#include "header/mainMenu.h"
 
 int main(int argc, char *argv[])
 {
     initMem();
-    maps* map = makeList();
-    simSpec sSpec = {0};
-    windowSpec wSpec = {0};
-    inputState input = {0};
-    loopSpecs lSpec = {0};
-    bool shouldWrite = false;
+    appContex app = {0};
 
-    if (argc >= 2 && argv[1] != NULL)
-    {
-        sSpec.iFile = argv[1];
-    }
-
-    else
-    {
-        fprintf(stderr, "Input file is missing. exiting...\n");
-        freeAll();
-        memReport();
-        return ERROR_INPUT;
-    }
-
-    if (argc >= 3 && argv[2] != NULL)
-    {
-        shouldWrite = 1;
-        sSpec.oFile = argv[2];
-    }
-
-    initSim(map, &sSpec, &wSpec);
-    mainLoop(map, &sSpec, &wSpec, &input, &lSpec, initSimLoop, simLoop, shouldContinueSim);
-    deInitSim(map, &sSpec, &wSpec, shouldWrite);
+    initMainMenu(&app)
     
     return 0;
 }

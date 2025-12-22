@@ -1,13 +1,16 @@
 #define RAYGUI_IMPLEMENTATION
 #include "../header/window.h"
 
-void initDisplay(maps* map, windowSpec* wSpec)
+void initDisplay(windowSpec* wSpec)
 {
     InitWindow(wSpec->windowWidth, wSpec->windowHeight, "Conway's Game of Life");
     SetTargetFPS(wSpec->fps);
+
+    /* TODO move it to somewhere else 
     getCellSize(map, wSpec, true);
     wSpec->moveX = 0;
     wSpec->moveY = 0;
+    */
 }
 
 void getCellSize(const maps* map, windowSpec* wSpec, bool init)
@@ -120,7 +123,7 @@ void drawMap(const maps* map, windowSpec* wSpec, uiDrawFn ui)
     wSpec->livingCount = 0;
 }
 
-void drawSimUi(const maps* map, windowSpec* wSpec)
+void drawSimUi(const maps* map, const windowSpec* wSpec)
 {
     // simulation stats top
     DrawRectangle(0, 0, wSpec->windowWidth, 98, PINK);
@@ -139,6 +142,21 @@ void drawSimUi(const maps* map, windowSpec* wSpec)
     {
         DrawText("PAUSED", (wSpec->windowWidth / 2) - (MeasureText("PAUSED", 25) / 2), 40, 25, WHITE);
     }
+}
+
+void drawEditorUi(const maps* map, const windowSpec* wSpec)
+{
+    // simulation stats top
+    DrawRectangle(0, 0, wSpec->windowWidth, 98, PINK);
+    DrawText(TextFormat("Currently living cells: %d", wSpec->livingCount), wSpec->windowWidth - (MeasureText("Currently living cells:xxx", 25) + 40), 40, 25, WHITE);
+    DrawRectangle(0, 93, wSpec->windowWidth, 5, WHITE);
+
+    // simulation stats bottom
+    DrawRectangle(0, wSpec->windowHeight - STATS_SIZE + 2, wSpec->windowWidth, 98, PINK);
+    DrawText(TextFormat("%.2lfx", (double)wSpec->size / (double)wSpec->originalSize), wSpec->windowWidth - (MeasureText("1.00x", 25) + 40), wSpec->windowHeight - 55, 25, WHITE);
+    DrawText(TextFormat("FPS:          %d", GetFPS()), 40, wSpec->windowHeight - 40, 25, WHITE);
+    DrawText(TextFormat("Frametime:   %lf", GetFrameTime()), 40, wSpec->windowHeight - 70, 25, WHITE);
+    DrawRectangle(0, wSpec->windowHeight - 97, wSpec->windowWidth, 5, WHITE);
 }
 
 void deInitDisplay()

@@ -1,65 +1,5 @@
 #include "../header/sim.h"
 
-void initSim(maps* map, simSpec* simSpec, windowSpec* wSpec)
-{
-    readFile(map, simSpec, wSpec);
-    initDisplay(map, wSpec);
-}
-
-void makeMap(maps* map)
-{
-    if (map->width == 0 && map->height == 0)
-    {
-        fprintf(stderr, "Map with 0 area is provided. exiting...\n");
-        freeAll();
-        memReport();
-        exit(ERROR_INPUT);
-    }
-
-    map->curMap = safeMalloc(sizeof(bool*) * (size_t)map->height);
-    map->preMap = safeMalloc(sizeof(bool*) * (size_t)map->height);
-
-    for (int i = 0; i < map->height; i++)
-    {
-        map->curMap[i] = safeMalloc(sizeof(bool) * (size_t)map->width);
-        map->preMap[i] = safeMalloc(sizeof(bool) * (size_t)map->width);
-    }
-}
-
-maps* makeList()
-{
-    maps* first = NULL;
-    maps* list = NULL;
-
-    for (int i = 0; i < MEMORY_LENGTH; i++)
-    {
-        maps* node = safeMalloc(sizeof(maps));
-        node->preMap = NULL;
-        node->curMap = NULL;
-        node->height = -1;
-        node->width = -1;
-        node->index = -1;
-
-        if (first == NULL)
-        {
-            list = node;
-            first = list;
-        }
-        
-        else
-        {
-            list->next = node;
-            list->next->pre = list;
-            list = list->next;
-        }
-    }
-
-    list->next = first;
-    first->pre = list;
-
-    return first;
-}
-
 void applyRule(maps* map)
 {
     int countn = 0;
@@ -116,61 +56,6 @@ void applyRule(maps* map)
     map->curMap = tmp;
 }
 
-void keyInput(inputState* input)
-{
-    if (IsKeyPressed(KEY_SPACE))
-    {
-        input->pause = !input->pause;
-    }      
-
-    if (IsKeyPressed(KEY_RIGHT) || IsKeyDown(KEY_UP))
-    {
-        input->next = true;
-    }
-
-    if (IsKeyPressed(KEY_LEFT) || IsKeyDown(KEY_DOWN))
-    {
-        input->prev = true;
-    }
-
-    double mouse = GetMouseWheelMove();
-
-    if (mouse > 0 || IsKeyPressed(KEY_J))
-    {
-        input->zoomIn = true;
-    }
-
-    else if (mouse < 0 || IsKeyPressed(KEY_K))
-    {
-        input->zoomOut = true;
-    }
-
-    if (IsKeyPressed(KEY_F))
-    {
-        input->recenter = true;
-    }
-
-    if (IsKeyDown(KEY_W))
-    {
-        input->panUp = true;
-    }
-
-    if (IsKeyDown(KEY_S))
-    {
-        input->panDown = true;
-    }
-
-    if (IsKeyDown(KEY_A))
-    {
-        input->panLeft = true;
-    }
-
-    if (IsKeyDown(KEY_D))
-    {
-        input->panRight = true;
-    }
-}
-
 void initSimLoop(simSpec* sSpec, loopSpecs* lSpec)
 {
     lSpec->inf = false;
@@ -182,23 +67,25 @@ void initSimLoop(simSpec* sSpec, loopSpecs* lSpec)
     }
 }
 
-void simLoop(maps* map, simSpec* sSpec, windowSpec* wSpec, loopSpecs* lSpec, inputState* input)
+maps* simLoop(appContex* app)
 {
-    double currentTime = GetTime();
-    double timePast = currentTime - lSpec->lastUpdate;
+    drawMap(app->map, app->wSpec, drawSimUi);
 
-    if (input->pause && input->next)
+    double currentTime = GetTime();
+    double timePast = currentTime - app->lSpec->lastUpdate;
+
+    if (app->iState->pause && input->next)
     {
-        if (map->next->index > map->index)
+        if (app->map->next->index > app->map->index)
         {
             // ie there is a new node after the current one, so the user backtracked, 
             //no neede to generate the values once again so only switching to the next chain is enough
-            map = map->next;
-            input->next = false;
+            app->map = map->next;
+            app->iState->next = false;
         }
     }
 
-    if (map->pre->preMap != NULL && map->pre->curMap != NULL && input->prev && input->pause)
+    if (app->map->pre->preMap != NULL && app->map->pre->curMap != NULL && app->iState->prev && app->iState->pause)
     {
         map = map->pre;
         input->prev = false;
@@ -234,82 +121,10 @@ void simLoop(maps* map, simSpec* sSpec, windowSpec* wSpec, loopSpecs* lSpec, inp
         map->index++;
     }
 
+    return map;
 }
 
-bool shouldContinueSim(maps* map, simSpec* sSpec, loopSpecs* lSpec)
+bool shouldContinueSim(const appContex* app)
 {
     return (map->index <= sSpec->simLength || lSpec->inf);
-}
-
-void mainLoop(maps* map, const simSpec* sSpec, windowSpec* wSpec, inputState* input, loopSpecs* lSpec, initLoop initL, loopType loopT, shouldContinue shouldC)
-{
-    map->index = 1;
-    initL(sSpec, lSpec);
-
-    while (!WindowShouldClose() && shouldC(map, sSpec, lSpec))
-    {
-        drawMap(map, wSpec, drawSimUi);
-        keyInput(input);
-
-        loopT(map, sSpec, wSpec, lSpec, input);
-        
-        if (input->zoomIn)
-        {
-            zoom(map, wSpec, ZOOM_STEP);
-            input->zoomIn = false;
-        }
-
-        else if (input->zoomOut)
-        {
-            zoom(map, wSpec, -1 * ZOOM_STEP);
-            input->zoomOut = false;
-        }
-
-
-        if (input->recenter)
-        {
-            refit(map, wSpec);
-            input->recenter = false;
-        }
-
-        if (input->panUp)
-        {
-            pivot(map, wSpec, MOVE_STEP, 2);
-            input->panUp = false;
-        }
-
-        if (input->panDown)
-        {
-            pivot(map, wSpec, -1 * MOVE_STEP, 2);
-            input->panDown = false;
-        }
-
-        if (input->panLeft)
-        {
-            pivot(map, wSpec, MOVE_STEP, 1);
-            input->panLeft = false;
-        }
-
-        if (input->panRight)
-        {
-            pivot(map, wSpec, -1 * MOVE_STEP, 1);
-            input->panRight = false;
-        }
-    }
-}
-
-void deInitSim(const maps* map, const simSpec* sSpec, const windowSpec* wSpec, const bool shouldWrite)
-{
-    if (shouldWrite)
-    {
-        writeFile(map, sSpec, wSpec);
-    }
-
-    if (IsWindowReady())
-    {
-        deInitDisplay();
-    }
-
-    freeAll();
-    memReport();
 }
