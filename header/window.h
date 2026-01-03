@@ -11,7 +11,7 @@
 #include "simSpec.h"
 #include "windowSpec.h"
 #include "sim.h"
-#include "settings.h"
+#include "statics.h"
 #include "uiColors.h"
 #include "appContext.h"
 

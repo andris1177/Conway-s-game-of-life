@@ -2,7 +2,7 @@
 
 #include "sim.h"
 #include "appContext.h"
-#include "settings.h"
+#include "statics.h"
 #include "window.h"
 
 void initMainMenu(appContex* app);

@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "raylib.h"
 
-#include "settings.h"
+#include "statics.h"
 #include "debugmalloc.h"
 #include "window.h"
 

@@ -5,7 +5,7 @@
 
 #include "window.h"
 #include "file.h"
-#include "settings.h"
+#include "statics.h"
 #include "mem.h"
 #include "appContext.h"
 

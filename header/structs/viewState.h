@@ -5,9 +5,6 @@
 /// @brief All of the data related to the window that needs to be shared between functions. 
 typedef struct 
 {
-    int windowWidth;
-    int windowHeight;
-    int fps;
     int size;
     int originalSize;
     int avlWidth;
@@ -18,6 +15,4 @@ typedef struct
     int startY;
     int moveX;
     int moveY;
-    bool pause;
-    int livingCount;
-} windowSpec;
+} viewState;

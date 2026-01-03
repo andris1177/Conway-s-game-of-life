@@ -7,7 +7,7 @@
 #include "maps.h"
 #include "simSpec.h"
 #include "sim.h"
-#include "settings.h"
+#include "statics.h"
 
 void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec);
 void writeFile(const maps* map, const simSpec* spec, const windowSpec* wSpec);
