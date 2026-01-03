@@ -1,4 +1,7 @@
 #include "../header/mem.h"
+#include <stdbool.h>
+#include <stdio.h>
+#include <unistd.h>
 
 // local variables for mem.c/h only
 static void** memMap;
@@ -17,8 +20,7 @@ void initMem()
     memMap = malloc(initialSize * sizeof(*memMap));
     if (memMap == NULL)
     {
-        fprintf(stderr, "SAFEMEM: Failed to allocate memory, sorry this is just my silly little gc acting up. exiting...\n");
-        exit(ERROR_MEMORY);
+        safeExit("SAFEMEM: Failed to allocate memory, sorry this is just my silly little gc acting up. exiting...\n", ERROR_MEMORY, true);
     }
 
     blockLength = initialSize;
@@ -34,24 +36,19 @@ void* safeMalloc(size_t size)
 {
     if (!init)
     {
-        fprintf(stderr, "Can't call safeMalloc() without first calling initMem(). exiting...\n");
-        exit(ERROR_MEMORY);
+        safeExit("Can't call safeMalloc() without first calling initMem(). exiting...\n", ERROR_MEMORY, true);
     }
 
     else if (memMap == NULL)
     {
-        fprintf(stderr, "Can't call safeMalloc() after freeAll(), if you want to use it call initMem() again. exiting...\n");
-        exit(ERROR_MEMORY);
+        safeExit("Can't call safeMalloc() after freeAll(), if you want to use it call initMem() again. exiting...\n", ERROR_MEMORY, true);
     }
 
     void* ptr = malloc(size);
 
     if (ptr == NULL)
     {
-        fprintf(stderr, "Failed to allocate memory. exiting...\n");
-        freeAll();
-        memReport();
-        exit(ERROR_MEMORY);
+        safeExit("Failed to allocate memory. exiting...\n", ERROR_MEMORY, true);
     }
 
     if (blockLength <= count)
@@ -73,10 +70,7 @@ void grow()
     tmp = realloc(memMap, (blockLength + blockPad) * sizeof((*tmp)));
     if (tmp == NULL)
     {
-        fprintf(stderr, "SAFEMALLOC: Failed to increase the size of the block, sorry this is just my silly little gc acting up. exiting...\n");
-        freeAll();
-        memReport();
-        exit(ERROR_MEMORY);
+        safeExit("SAFEMALLOC: Failed to increase the size of the block, sorry this is just my silly little gc acting up. exiting...\n", ERROR_MEMORY, true);
     }
 
     memMap = tmp;
@@ -89,10 +83,7 @@ void shrink()
     tmp = realloc(memMap, (blockLength - blockPad) * sizeof(*tmp));
     if (tmp == NULL)
     {
-        fprintf(stderr, "SAFEFREE: Failed to decrease the size of the block, sorry this is just my silly little gc acting up. exiting...\n");
-        freeAll();
-        memReport();
-        exit(ERROR_MEMORY);
+        safeExit("SAFEFREE: Failed to decrease the size of the block, sorry this is just my silly little gc acting up. exiting...\n", ERROR_MEMORY, true);
     }
 
     memMap = tmp;
@@ -135,24 +126,41 @@ void safeFree(void* ptr)
         }
     }
 
-    fprintf(stderr, "The program tried to free a pointer not managed by gc, might be double free, or did you used plain free. exiting...\n");
-    freeAll();
-    memReport();
-    exit(ERROR_MEMORY);
+    safeExit("The program tried to free a pointer not managed by gc, might be double free, or did you used plain free. exiting...\n", ERROR_MEMORY, true);
+}
+
+void safeExit(const char* message, int errorCode, bool isError)
+{
+    if (IsWindowReady())
+    {
+        deInitDisplay();
+    }
+
+    if (memMap != NULL)
+    {
+        freeAll();
+        memReport();
+    }
+
+    if (isError)
+    {
+        fprintf(stderr, message);
+        exit(errorCode);
+    }
+
+    exit(0);
 }
 
 void freeAll()
 {
     if (!init)
     {
-        fprintf(stderr, "Can't call freeAll() without first calling initMem(). exiting...\n");
-        exit(ERROR_MEMORY);
+        safeExit("Can't call freeAll() without first calling initMem(). exiting...\n", ERROR_MEMORY, true);
     }
 
     else if (memMap == NULL)
     {
-        fprintf(stderr, "Can't call freeAll() more than once without a new initMem() before the call. exiting...\n");
-        exit(ERROR_MEMORY);
+        safeExit("Can't call freeAll() more than once without a new initMem() before the call. exiting...\n", ERROR_MEMORY, true);
     }
 
     for (size_t i = 0; i < count; i++)

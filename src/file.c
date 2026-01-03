@@ -6,10 +6,7 @@ void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
 
     if (file == NULL)
     {
-        fprintf(stderr, "Failed to open the input file. exiting...\n");
-        freeAll();
-        memReport();
-        exit(ERROR_FILE);
+        safeExit("Failed to open the input file. exiting...\n", ERROR_FILE, true);
     }
 
     char buffer[20];
@@ -17,19 +14,10 @@ void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
     char* out = strstr(buffer, "#GOLMAPFILE");
     if (out == NULL)
     {
-        fprintf(stderr, "File without the required file signature is loaded. exiting...\n");
-        freeAll();
-        memReport();
-        exit(ERROR_FILE);
+        safeExit("File without the required file signature is loaded. exiting...\n", ERROR_FILE, true);
     }
 
     int result = 0;
-    fgets(buffer, sizeof(buffer), file);
-    result += sscanf(buffer, "%*s %d", &wSpec->windowWidth);
-    fgets(buffer, sizeof(buffer), file);
-    result += sscanf(buffer, "%*s %d", &wSpec->windowHeight);
-    fgets(buffer, sizeof(buffer), file);
-    result += sscanf(buffer, "%*s %d", &wSpec->fps);
     fgets(buffer, sizeof(buffer), file);
     result += sscanf(buffer, "%*s %d", &map->width);
     fgets(buffer, sizeof(buffer), file);
@@ -41,10 +29,7 @@ void readFile(maps* map, simSpec* sSpec, windowSpec* wSpec)
 
     if (result != 7)
     {
-        fprintf(stderr, "The file header is damaged or missing. exiting…\n");
-        freeAll();
-        memReport();
-        exit(ERROR_FILE);
+        safeExit("The file header is damaged or missing. exiting…\n", ERROR_FILE, true);
     }
 
     makeMap(map);
@@ -97,10 +82,7 @@ void writeFile(const maps* map, const simSpec* sSpec, const windowSpec* wSpec)
         
         if (out == NULL)
         {
-            fprintf(stderr, "The exit file exists but doesn't contain the required file signature. Are you sure you didn't pass some other file? exiting...\n");
-            freeAll();
-            memReport();
-            exit(ERROR_FILE);
+            safeExit("The exit file exists but doesn't contain the required file signature. Are you sure you didn't pass some other file? exiting...\n", ERROR_FILE, true);
         }
 
         else
@@ -115,15 +97,10 @@ void writeFile(const maps* map, const simSpec* sSpec, const windowSpec* wSpec)
 
     if (file == NULL)
     {
-        fprintf(stderr, "Failed to open the output file. exiting...\n");
-        deInitSim(map, sSpec, wSpec, false);
-        exit(ERROR_FILE);
+        safeExit("Failed to open the output file. exiting...\n", ERROR_FILE, true);
     }
 
     fprintf(file, "#GOLMAPFILE\n");
-    fprintf(file, "windowWidth %d\n", wSpec->windowWidth);
-    fprintf(file, "windowHeight %d\n", wSpec->windowHeight);
-    fprintf(file, "fps %d\n", wSpec->fps);
     fprintf(file, "width %d\n", map->width);
     fprintf(file, "height %d\n", map->height);
     fprintf(file, "simCount %d\n", sSpec->simLength);

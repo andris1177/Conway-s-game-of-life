@@ -8,4 +8,6 @@ typedef struct
     Color cell;
     Color text;
     Color textBackground;
-}
+} uiColor;
+
+extern const uiColor darkPink;

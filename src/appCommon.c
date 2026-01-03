@@ -2,18 +2,15 @@
 
 void initSim(appContex* app)
 {
-    readFile(app->map, &app->simSpec, &app->wSpec);
-    initDisplay(app->map, &app->wSpec);
+    readFile(app->map, &app->sSpec, &app->wSpec);
+    initDisplay(&app->wSpec);
 }
 
 void makeMap(maps* map)
 {
     if (map->width == 0 && map->height == 0)
     {
-        fprintf(stderr, "Map with 0 area is provided. exiting...\n");
-        freeAll();
-        memReport();
-        exit(ERROR_INPUT);
+        safeExit("Map with 0 area is provided. exiting...\n", ERROR_INPUT, true);
     }
 
     map->curMap = safeMalloc(sizeof(bool*) * (size_t)map->height);
@@ -120,53 +117,53 @@ void mainLoop(appContex* app, initLoop initL, loopType loopT, shouldContinue sho
     app->map->index = 1;
     initL(&app->sSpec, &app->lSpec);
 
-    while (!WindowShouldClose() && shouldC(app->map, &app->sSpec, &app->lSpec))
+    while (!WindowShouldClose() && shouldC(app))
     {
         keyInput(&app->iState);
 
         app->map = loopT(app);
         
-        if (&app->iState->zoomIn)
+        if (app->iState.zoomIn)
         {
             zoom(app->map, &app->wSpec, ZOOM_STEP);
-            app->zoomIn = false;
+            app->iState.zoomIn = false;
         }
 
-        else if (&app->iState->zoomOut)
+        else if (app->iState.zoomOut)
         {
-            zoom(map, wSpec, -1 * ZOOM_STEP);
-            input->zoomOut = false;
+            zoom(app->map, &app->wSpec, -1 * ZOOM_STEP);
+            app->iState.zoomOut = false;
         }
 
 
-        if (input->recenter)
+        if (app->iState.recenter)
         {
-            refit(map, wSpec);
-            input->recenter = false;
+            refit(app->map, &app->wSpec);
+            app->iState.recenter = false;
         }
 
-        if (input->panUp)
+            if (app->iState.panUp)
+            {
+                pivot(app->map, &app->wSpec, MOVE_STEP, 2);
+                app->iState.panUp = false;
+            }
+
+        if (app->iState.panDown)
         {
-            pivot(map, wSpec, MOVE_STEP, 2);
-            input->panUp = false;
+            pivot(app->map, &app->wSpec, -1 * MOVE_STEP, 2);
+            app->iState.panDown = false;
         }
 
-        if (input->panDown)
+        if (app->iState.panLeft)
         {
-            pivot(map, wSpec, -1 * MOVE_STEP, 2);
-            input->panDown = false;
+            pivot(app->map, &app->wSpec, MOVE_STEP, 1);
+            app->iState.panLeft = false;
         }
 
-        if (input->panLeft)
+        if (app->iState.panRight)
         {
-            pivot(map, wSpec, MOVE_STEP, 1);
-            input->panLeft = false;
-        }
-
-        if (input->panRight)
-        {
-            pivot(map, wSpec, -1 * MOVE_STEP, 1);
-            input->panRight = false;
+            pivot(app->map, &app->wSpec, -1 * MOVE_STEP, 1);
+            app->iState.panRight = false;
         }
     }
 }
@@ -175,14 +172,8 @@ void deInitSim(const appContex* app, const bool shouldWrite)
 {
     if (shouldWrite)
     {
-        writeFile(map, sSpec, wSpec);
+        writeFile(app->map, &app->sSpec, &app->wSpec);
     }
 
-    if (IsWindowReady())
-    {
-        deInitDisplay();
-    }
-
-    freeAll();
-    memReport();
+    safeExit("", 0, false);
 }

@@ -1,19 +1,20 @@
 #define RAYGUI_IMPLEMENTATION
 #include "../header/window.h"
 
-void initDisplay(windowSpec* wSpec)
+void initDisplay(const windowSpec* wSpec)
 {
     InitWindow(wSpec->windowWidth, wSpec->windowHeight, "Conway's Game of Life");
     SetTargetFPS(wSpec->fps);
+}
 
-    /* TODO move it to somewhere else 
+void initMapDraw(const maps* map, windowSpec* wSpec)
+{
     getCellSize(map, wSpec, true);
     wSpec->moveX = 0;
     wSpec->moveY = 0;
-    */
 }
 
-void getCellSize(const maps* map, windowSpec* wSpec, bool init)
+void getCellSize(const maps* map, windowSpec* wSpec, const bool init)
 {
     if (init)
     {
@@ -41,11 +42,7 @@ void getCellSize(const maps* map, windowSpec* wSpec, bool init)
 
         if (wSpec->size < 1)
         {
-            fprintf(stderr, "To small window resolution for the given map. exiting...\n");
-            freeAll();
-            deInitDisplay();
-            memReport();
-            exit(ERROR_INPUT);
+            safeExit("To small window resolution for the given map. exiting...\n", ERROR_INPUT, true);
         }
 
         wSpec->originalSize = wSpec->size;
@@ -58,7 +55,7 @@ void getCellSize(const maps* map, windowSpec* wSpec, bool init)
     wSpec->startY = (((wSpec->avlHeight - wSpec->displayMapSizeY) / 2) + STATS_SIZE) + wSpec->moveY;
 }
 
-void zoom(maps* map, windowSpec* wSpec, int amount)
+void zoom(const maps* map, windowSpec* wSpec, const int amount)
 {
     if (wSpec->size + amount >= 1)
     {
@@ -67,7 +64,7 @@ void zoom(maps* map, windowSpec* wSpec, int amount)
     }
 }
 
-void pivot(maps* map, windowSpec* wSpec, int amount, int direction)
+void pivot(const maps* map, windowSpec* wSpec, const int amount, const int direction)
 {
     if (direction == 1)
     {
@@ -82,7 +79,7 @@ void pivot(maps* map, windowSpec* wSpec, int amount, int direction)
     getCellSize(map, wSpec, false);
 }
 
-void refit(maps* map, windowSpec* wSpec)
+void refit(const maps* map, windowSpec* wSpec)
 {
     wSpec->size = wSpec->originalSize;
     wSpec->moveX = 0;
@@ -90,37 +87,37 @@ void refit(maps* map, windowSpec* wSpec)
     getCellSize(map, wSpec, false);
 }
 
-void drawMap(const maps* map, windowSpec* wSpec, uiDrawFn ui)
+void drawMap(appContex* app, uiDrawFn ui)
 {
-    wSpec->livingCount = 0;
+    app->wSpec.livingCount = 0;
     
-    int x = wSpec->startX;
-    int y = wSpec->startY;
+    int x = app->wSpec.startX;
+    int y = app->wSpec.startY;
 
     BeginDrawing();
     ClearBackground(BLACK);
 
-    for (int i = 0; i < map->height; i++)
+    for (int i = 0; i < app->map->height; i++)
     {
-        for (int j = 0; j < map->width; j++)
+        for (int j = 0; j < app->map->width; j++)
         {
-            if (map->preMap[i][j])
+            if (app->map->preMap[i][j])
             {
-                DrawRectangle(x, y, wSpec->size, wSpec->size, WHITE);
-                wSpec->livingCount++;
+                DrawRectangle(x, y, app->wSpec.size, app->wSpec.size, WHITE);
+                app->wSpec.livingCount++;
             }
 
-            x += (wSpec->size + CELL_GAP);
+            x += (app->wSpec.size + CELL_GAP);
         }
 
-        y += (wSpec->size + CELL_GAP);
-        x = ((wSpec->avlWidth - wSpec->displayMapSizeX) / 2) + wSpec->moveX;
+        y += (app->wSpec.size + CELL_GAP);
+        x = ((app->wSpec.avlWidth - app->wSpec.displayMapSizeX) / 2) + app->wSpec.moveX;
     }
 
-    ui(map, wSpec);
+    ui(app->map, &app->wSpec);
 
     EndDrawing();
-    wSpec->livingCount = 0;
+    app->wSpec.livingCount = 0;
 }
 
 void drawSimUi(const maps* map, const windowSpec* wSpec)
@@ -157,6 +154,30 @@ void drawEditorUi(const maps* map, const windowSpec* wSpec)
     DrawText(TextFormat("FPS:          %d", GetFPS()), 40, wSpec->windowHeight - 40, 25, WHITE);
     DrawText(TextFormat("Frametime:   %lf", GetFrameTime()), 40, wSpec->windowHeight - 70, 25, WHITE);
     DrawRectangle(0, wSpec->windowHeight - 97, wSpec->windowWidth, 5, WHITE);
+}
+
+void drawMainMenu(const windowSpec* wSpec, appMode* aMode, bool* preMode)
+{ 
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 30); 
+    GuiSetStyle(DEFAULT, TEXT_PADDING, 10);
+    BeginDrawing();
+    ClearBackground(BLACK);
+    if (GuiButton((Rectangle){ wSpec->windowWidth / 2 - 150, wSpec->windowHeight / 2, 300, 70 }, "Map Editor"))
+    {
+        aMode->editorMenu = true;
+        *preMode = false;
+    }
+    EndDrawing();
+}
+
+void drawEditorMenu(const windowSpec* wSpec, appMode* aMode, bool* preMode)
+{
+    BeginDrawing();
+    ClearBackground(BLACK);
+    int curr = 0;
+    bool open = false;
+    GuiDropdownBox((Rectangle){100, 100, 200, 100}, "test1;test2;test3", &curr, open);
+    EndDrawing();
 }
 
 void deInitDisplay()

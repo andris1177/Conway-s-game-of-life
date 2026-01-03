@@ -5,6 +5,7 @@
 #include "windowSpec.h"
 #include "inputState.h"
 #include "loopSpecs.h"
+#include "appMode.h"
 
 typedef struct 
 {
@@ -13,4 +14,5 @@ typedef struct
     windowSpec wSpec;
     inputState iState;
     loopSpecs lSpec;
+    appMode aMode;
 } appContex;

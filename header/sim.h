@@ -30,4 +30,4 @@ void applyRule(maps* map);
 // editor.c
 void initEditorLoop(simSpec* sSpec, loopSpecs* lSpec);
 maps* editorLoop(appContex* app);
-bool shouldContinoueEditor(const appContex* app)
+bool shouldContinoueEditor(const appContex* app);

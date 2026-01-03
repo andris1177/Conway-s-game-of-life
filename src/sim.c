@@ -69,62 +69,60 @@ void initSimLoop(simSpec* sSpec, loopSpecs* lSpec)
 
 maps* simLoop(appContex* app)
 {
-    drawMap(app->map, app->wSpec, drawSimUi);
+    drawMap(app, drawSimUi);
 
     double currentTime = GetTime();
-    double timePast = currentTime - app->lSpec->lastUpdate;
+    double timePast = currentTime - app->lSpec.lastUpdate;
 
-    if (app->iState->pause && input->next)
+    if (app->iState.pause && app->iState.next)
     {
         if (app->map->next->index > app->map->index)
         {
-            // ie there is a new node after the current one, so the user backtracked, 
-            //no neede to generate the values once again so only switching to the next chain is enough
-            app->map = map->next;
-            app->iState->next = false;
+            app->map = app->map->next;
+            app->iState.next = false;
         }
     }
 
-    if (app->map->pre->preMap != NULL && app->map->pre->curMap != NULL && app->iState->prev && app->iState->pause)
+    if (app->map->pre->preMap != NULL && app->map->pre->curMap != NULL && app->iState.prev && app->iState.pause)
     {
-        map = map->pre;
-        input->prev = false;
+        app->map = app->map->pre;
+        app->iState.prev = false;
     }
 
     // TODO: also check if the user backtracked and don't regenerate nodes when the simulation is resumed. 
-    if ((timePast >= sSpec->simSpeed && !input->pause) || (input->next && input->pause))
+    if ((timePast >= app->sSpec.simSpeed && !app->iState.pause) || (app->iState.next && app->iState.pause))
     {
-        lSpec->lastUpdate = GetTime();
+        app->lSpec.lastUpdate = GetTime();
 
-        map->next->height = map->height;
-        map->next->width = map->width;
-        map->next->index = map->index;
+        app->map->next->height = app->map->height;
+        app->map->next->width = app->map->width;
+        app->map->next->index = app->map->index;
 
-        if (map->next->preMap == NULL || map->next->curMap == NULL)
+        if (app->map->next->preMap == NULL || app->map->next->curMap == NULL)
         {
-            makeMap(map->next);
+            makeMap(app->map->next);
         }
 
-        for (int i = 0; i < map->height; i++)
+        for (int i = 0; i < app->map->height; i++)
         {
-            for (int j = 0; j < map->width; j++)
+            for (int j = 0; j < app->map->width; j++)
             {
-                map->next->preMap[i][j] = map->preMap[i][j];
-                map->next->curMap[i][j] = map->curMap[i][j];
+                app->map->next->preMap[i][j] = app->map->preMap[i][j];
+                app->map->next->curMap[i][j] = app->map->curMap[i][j];
             }
         }
 
-        map = map->next;
+        app->map = app->map->next;
 
-        applyRule(map);
-        input->next = false;
-        map->index++;
+        applyRule(app->map);
+        app->iState.next = false;
+        app->map->index++;
     }
 
-    return map;
+    return app->map;
 }
 
 bool shouldContinueSim(const appContex* app)
 {
-    return (map->index <= sSpec->simLength || lSpec->inf);
+    return (app->map->index <= app->sSpec.simLength || app->lSpec.inf);
 }

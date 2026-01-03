@@ -1,11 +1,12 @@
 #include "header/mainMenu.h"
 
-int main(int argc, char *argv[])
+int main()
 {
     initMem();
     appContex app = {0};
 
-    initMainMenu(&app)
-    
+    initMainMenu(&app);
+    menuMainLoop(&app);       
+    deInitSim(&app, false); 
     return 0;
 }
