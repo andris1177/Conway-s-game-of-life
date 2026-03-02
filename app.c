@@ -1,12 +1,7 @@
-#include "header/mainMenu.h"
+#include <stdio.h>
 
 int main()
 {
-    initMem();
-    appContex app = {0};
-
-    initMainMenu(&app);
-    menuMainLoop(&app);       
-    deInitSim(&app, false); 
+    printf("hello world\n");
     return 0;
 }

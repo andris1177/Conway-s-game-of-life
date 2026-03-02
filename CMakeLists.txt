@@ -28,13 +28,10 @@ FetchContent_MakeAvailable(raylib)
 FetchContent_MakeAvailable(raygui)
 FetchContent_MakeAvailable(nfde)
 
-add_library(core STATIC src/file.c src/sim.c src/window.c src/mem.c src/appCommon.c src/editor.c src/mainMenu.c)
-target_include_directories(core PUBLIC header)
-target_link_libraries(core PUBLIC raylib nfd)
-target_include_directories(core PUBLIC  ${raygui_SOURCE_DIR}/src)
+#add_library(core STATIC )
+#target_include_directories(core PUBLIC header)
+#target_link_libraries(core PUBLIC raylib nfd)
+#target_include_directories(core PUBLIC  ${raygui_SOURCE_DIR}/src)
 
 add_executable(gol app.c)
 target_link_libraries(gol PUBLIC core)
-
-add_executable(mapGen mapGen.c)
-target_link_libraries(mapGen PUBLIC core)
